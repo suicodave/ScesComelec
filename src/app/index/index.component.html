@@ -1,0 +1,28 @@
+<mat-toolbar color="primary">
+  <button mat-icon-button (click)="sidenav.open()">
+    <mat-icon>menu</mat-icon>
+  </button>
+</mat-toolbar>
+
+<mat-sidenav-container>
+  <mat-sidenav mode="over" #sidenav>
+    <a routerLink="/overview" routerLinkActive="active">Overview</a>
+    <a routerLink="/my-elections" routerLinkActive="active">My Elections</a>
+  </mat-sidenav>
+
+  <div fxLayout="row" fxLayoutAlign="start" class="index-contents">
+    <div fxFlex="250px" class="navigation-contents" >
+      <button mat-raised-button color="primary" (click)="addElectionDialog()" >Prepare Election</button>
+      <a routerLink="/overview" routerLinkActive="active">Overview</a>
+      <a routerLink="/my-elections" routerLinkActive="active">My Elections</a>
+      <a routerLink="/candidacy-requests" routerLinkActive="active">Candidacy Requests</a>
+      <a routerLink="/settings" routerLinkActive="active">Settings</a>
+    </div>
+    <div class="router-content" fxFlex>
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+
+
+
+</mat-sidenav-container>

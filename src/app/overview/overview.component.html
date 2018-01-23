@@ -1,0 +1,86 @@
+<div fxLayout="column" fxLayoutAlign="start" fxLayoutGap="25px" class="component-container" >
+
+  <!-- row1 -->
+  <div fxLayout="row" fxFlex="50" fxLayoutAlign="start" fxLayoutGap="25px">
+    <!-- ActiveVoters -->
+    <mat-card fxFlex="50%">
+
+      <div fxLayout="row" fxLayoutAlign="center start">
+        <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px">
+          <span>Active Voters</span>
+          <mat-form-field>
+            <mat-select placeholder="School Year" name="food">
+              <mat-option value="2017">2017</mat-option>
+              <mat-option value="2018">2018</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <mat-card-content>
+
+
+        <mat-list>
+          <mat-list-item>
+            College : 1200
+          </mat-list-item>
+          <mat-list-item> Senior High : 300 </mat-list-item>
+          <mat-list-item> Junior High : 800 </mat-list-item>
+          <mat-list-item> Elementary : 200 </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+
+    </mat-card>
+
+    <!-- AllElections -->
+    <mat-card fxFlex="50%">
+      <div fxLayout="row" fxLayoutAlign="center start">
+        <span>All Elections</span>
+      </div>
+
+      <mat-card-content fxLayout="column" fxLayoutAlign="start" fxLayoutGap="15px">
+        <div *ngFor="let election of elections">
+          <div fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap="15px">
+            <span> {{election.sy}} </span>
+            <span>{{election.department}} </span>
+            <span>{{election.user}} </span>
+          </div>
+          <mat-divider></mat-divider>
+        </div>
+
+      </mat-card-content>
+    </mat-card>
+
+
+  </div>
+
+
+  <!-- row2 -->
+  <div fxLayout="row" fxFlex="50" fxLayoutAlign="start" fxLayoutGap="25px">
+    <!-- myElections -->
+    <mat-card fxFlex="50%">
+
+      <div fxLayout="row" fxLayoutAlign="center start">
+        <span>My Elections</span>
+      </div>
+
+      <mat-card-content fxLayout="column" fxLayoutAlign="start" fxLayoutGap="15px">
+        <div *ngFor="let election of elections">
+          <div fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap="15px">
+            <span> {{election.sy}} </span>
+            <span>{{election.department}} </span>
+            <span>{{election.description}} </span>
+          </div>
+          <mat-divider></mat-divider>
+        </div>
+      </mat-card-content>
+
+    </mat-card>
+
+    <!-- Opened Elections -->
+    <mat-card fxFlex="50%">Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur incidunt doloremque animi sapiente ex illo laborum
+      sequi enim hic vitae alias repudiandae molestiae eveniet iste illum, soluta id mollitia tempora?
+    </mat-card>
+  </div>
+
+</div>

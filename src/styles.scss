@@ -1,1 +1,19 @@
-/* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/prebuilt-themes/purple-green.css';
+@import '~@angular/material/theming';
+
+body{
+    font-family: Roboto ;
+    margin: 0;
+}
+
+
+.component-container{
+    padding-bottom: 50px;
+}
+
+mat-dialog-content{
+    padding:25px !important ;
+}
+.mat-dialog-actions .mat-button+.mat-button, .mat-dialog-actions .mat-button+.mat-raised-button, .mat-dialog-actions .mat-raised-button+.mat-button, .mat-dialog-actions .mat-raised-button+.mat-raised-button{
+    margin-left:0 !important ;
+}

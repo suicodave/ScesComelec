@@ -1,0 +1,31 @@
+<div fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap="gappx">
+  <p>Election Setup</p>
+  <button tabindex="-1" mat-icon-button mat-dialog-close>
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+
+<mat-dialog-content>
+  <span>Select Audience</span>
+  <br>
+  <br>
+  <div fxLayout="row" fxLayoutAlign="start" fxLayoutGap="25px">
+    <mat-checkbox value="0" (change)="selectAll($event)">All</mat-checkbox>
+    <mat-checkbox #checkInput (change)="onSelectDepartment($event)" *ngFor="let department of departments" [value]="department">
+      {{department.name}}
+    </mat-checkbox>
+  </div>
+  <br>
+  <br>
+  <mat-checkbox #includeIndiRef > Include Independent Party </mat-checkbox>
+
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="15px">
+
+  <button mat-raised-button color="primary" (click)="addElection()" >Complete Setup</button>
+  <button mat-button mat-dialog-close>Cancel</button>
+
+</mat-dialog-actions>

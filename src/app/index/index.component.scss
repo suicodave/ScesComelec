@@ -1,0 +1,60 @@
+@import '~@angular/material/theming';
+
+.router-content{
+    margin: 15px;
+    padding:25px;
+}
+
+mat-sidenav-container{
+    padding-top: 70px;
+    height:100vh;
+    width: 100%;
+}
+
+
+mat-sidenav{
+    width:250px;
+    padding-top: 70px;
+    @extend .navigation-contents;
+    
+    
+}
+
+mat-toolbar{
+    @include mat-elevation(7);
+    z-index: 7;
+    position: fixed;
+}
+
+.active{
+    background: blue;
+    @include mat-elevation(7);
+}
+
+.index-contents{
+    height: inherit;
+}
+
+.navigation-contents{
+    
+    padding: 15px;
+    &> a{
+        margin:auto;
+        text-decoration: none;
+        color:inherit;
+        cursor: pointer;
+        box-sizing: border-box;
+        border-radius: 2px;
+        outline: none;
+        width: 95%;
+        padding:20px;
+        margin-bottom: 15px;
+        display: block;
+    }
+    &> button[mat-raised-button]{
+        left:50%;
+        transform: translateX(-50%);
+        margin-top: 25px;
+        margin-bottom: 25px;
+    }
+}
