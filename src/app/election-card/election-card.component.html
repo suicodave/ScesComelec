@@ -1,0 +1,128 @@
+<!-- Opened Elections -->
+<mat-card>
+  <div fxLayout="row" fxLayoutAlign="center start">
+    <div fxLayout="column" fxLayoutAlign="none center" fxLayoutGap="15px">
+      <span>Prepared Election</span>
+      <span>SSC Election 2017-2018</span>
+    </div>
+  </div>
+
+  <mat-card-content>
+    <p>
+      Election Id : {{election.id}}
+    </p>
+    <p>
+      Audience : {{audience}}
+    </p>
+    <p>
+      Number of Voters : {{numberOfStudents}}
+    </p>
+    <p>
+      School Year : {{schoolYear.name}}
+    </p>
+    <p>Created At : {{election.created_at.date | date:'mediumDate' }}</p>
+    <p></p>
+
+    <p>
+      <button mat-raised-button color="primary" *ngIf="!election.is_active">Start Election</button>
+      <button mat-raised-button color="warn" *ngIf="election.is_active">End Election</button>
+    </p>
+
+
+    <mat-tab-group dynamicHeight="true">
+
+      <!-- CandidatesSection -->
+      <mat-tab label="Candidates">
+        <div class="tab-container">
+          <button (click)="addCandidate()" matTooltip="Register Candidate" matTooltipClass="tooltipStyle" matTooltipPosition="after"
+            mat-icon-button>
+            <mat-icon>add</mat-icon>
+          </button>
+
+          <div class="listing" fxLayout="row wrap" fxLayoutAlign="start" fxLayoutGap="15px">
+            <mat-card *ngFor="let candidate of candidates" fxFlex="30">
+              <p>
+
+                Name: {{candidate.student_profile.last_name}}, {{candidate.student_profile.first_name}}
+              </p>
+              <p *ngIf="election.is_party_enabled" >
+                Partylist: {{candidate.partylist?.name}}
+              </p>
+              <p>
+                Department: {{candidate.student_profile.department.name}}
+              </p>
+              <p *ngIf="candidate.student_profile.college">
+                College : {{candidate.student_profile.college?.name}} {{candidate.student_profile.year_level.name}}
+              </p>
+            </mat-card>
+          </div>
+
+        </div>
+
+      </mat-tab>
+
+
+      <!-- PositionsSection -->
+      <mat-tab label="Positions">
+        <div class="tab-container">
+          <button (click)="addPosition()" matTooltip="Add Positions" matTooltipClass="tooltipStyle" matTooltipPosition="after" mat-icon-button>
+            <mat-icon>add</mat-icon>
+          </button>
+
+          <div class="listing" fxLayout="row wrap" fxLayoutAlign="start" fxLayoutGap="15px">
+            <mat-card *ngFor="let position of positions" fxFlex="30">
+              <p>
+
+                Name: {{position.name}}
+              </p>
+              <p>
+                Number of Winners: {{position.number_of_winners}}
+              </p>
+              <p>
+                College Representative : {{ position.is_colrep ? 'Yes' : 'No' }}
+              </p>
+            </mat-card>
+          </div>
+        </div>
+      </mat-tab>
+
+
+      <!-- PartiesSection -->
+      <mat-tab label="Parties" *ngIf="election.is_party_enabled">
+        <div class="tab-container">
+          <button (click)="addParty()" matTooltip="Add Party" matTooltipClass="tooltipStyle" matTooltipPosition="after" mat-icon-button>
+            <mat-icon>add</mat-icon>
+          </button>
+
+          <div class="listing" fxLayout="row wrap" fxLayoutAlign="start" fxLayoutGap="15px">
+            <mat-card *ngFor="let partylist of partylists" fxFlex="30">
+              <p>
+                Name: {{partylist.name}}
+              </p>
+              <p>
+                Independent Party: {{partylist.is_independent ? 'Yes' : 'No'}}
+              </p>
+
+            </mat-card>
+          </div>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Results">
+        <div class="tab-container">
+
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Voters">
+        <div class="tab-container">
+
+        </div>
+      </mat-tab>
+
+
+
+    </mat-tab-group>
+  </mat-card-content>
+
+</mat-card>

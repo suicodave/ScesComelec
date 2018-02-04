@@ -1,0 +1,99 @@
+<div fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap="gappx">
+  <p>Register Candidate</p>
+  <button tabindex="-1" mat-icon-button mat-dialog-close>
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+
+<mat-dialog-content>
+
+  <div class="tab" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="gappx">
+
+    <div class="col 1" fxFlex>
+      <mat-form-field>
+        <input type="text" #input (keyup.enter)="findStudent(input.value)" matInput placeholder="Look For... ">
+      </mat-form-field>
+      <br>
+      <button color="primary" (click)="findStudent(input.value)" mat-raised-button>Search Student</button>
+
+
+      <div class="if-selected" *ngIf="selectedStudent">
+        <p>
+          <span>Selected Student: </span>
+
+        </p>
+        <p>
+          Name: {{selectedStudent.last_name}}, {{selectedStudent.first_name}} {{selectedStudent.middle_name}}
+        </p>
+        <p>
+          Department: {{selectedStudent.department.name}}
+        </p>
+        <p *ngIf="selectedStudent.college">
+          College: {{selectedStudent.college?.name}}
+        </p>
+        <p>
+          Year Level: {{selectedStudent.year_level.name}}
+        </p>
+      </div>
+
+      <br>
+      <br>
+      <div [formGroup]="candidateForm">
+        <mat-form-field>
+          <mat-select placeholder="Desired Position" formControlName="position" [(value)]="candidateForm.value.position">
+            <mat-option *ngFor="let position of positions" [value]="position">{{position.name}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <br>
+
+        <mat-form-field *ngIf="data.election.is_party_enabled">
+          <mat-select placeholder="Desired Partylist" formControlName="partylist" [(value)]="candidateForm.value.partylist">
+            <mat-option *ngFor="let party of partylists" [value]="party">{{party.name}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <br>
+
+        <mat-form-field>
+          <textarea name="" matInput placeholder="About Me" formControlName="aboutMe" matTextareaAutosize id="" cols="30" rows="5"></textarea>
+        </mat-form-field>
+      </div>
+
+
+      <button mat-raised-button color="primary" (click)="file.click()">
+        Select Candidate Image
+      </button>
+
+
+
+      <input type="file" (change)="getImage($event)" #file accept="image/*" style="display:none">
+    </div>
+
+    <div class="col 2" fxFlex>
+      <span>Students Found : </span>
+      <mat-selection-list (selectionChange)="onSelectStudent(students,$event)" #students>
+        <mat-list-option [value]="student" *ngFor="let student of foundStudents">
+          {{student.last_name}}, {{student.first_name}} {{student.middle_name}}
+        </mat-list-option>
+      </mat-selection-list>
+    </div>
+
+    <div class="col 3" fxFlex fxLayout="column" fxLayoutAlign="center center">
+      <span>Image Preview</span>
+      <img [src]="imgUrl" fxFlex class="img" alt="">
+    </div>
+  </div>
+
+
+
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="15px">
+
+  <button mat-raised-button color="primary" (click)="registerCandidate()">Register Candidate</button>
+  <button mat-button mat-dialog-close>Cancel</button>
+
+</mat-dialog-actions>

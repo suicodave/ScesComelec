@@ -10,6 +10,7 @@ import { MatCheckboxChange, MatCheckbox, MatSnackBar } from '@angular/material';
 export class AddElectionComponent implements OnInit {
   @ViewChildren('checkInput') checkInputs: QueryList<MatCheckbox>;
   @ViewChild('includeIndiRef') includeIndiRef: MatCheckbox;
+  @ViewChild('includeColRep') includeColRep: MatCheckbox;
   departments = [
     { id: 1, name: 'College' },
     { id: 2, name: 'Senior High' },
@@ -18,16 +19,23 @@ export class AddElectionComponent implements OnInit {
   ];
 
   selectedDepartments = [];
-
-  departmentForm: FormGroup;
+  isCollegeSelected = false;
+  electionForm: FormGroup;
 
   constructor(private fb: FormBuilder, private snackbar: MatSnackBar) {
 
   }
 
   ngOnInit() {
+    this.initForm();
   }
 
+  initForm() {
+    this.electionForm = this.fb.group({
+      sy: ['', [Validators.required]],
+      description: ['', [Validators.required]]
+    });
+  }
 
 
   selectAll(event: MatCheckboxChange) {
@@ -36,18 +44,26 @@ export class AddElectionComponent implements OnInit {
       const selectedValue = checkbox.value;
       checkbox.checked = event.checked;
       this.insertSelectedDepartment(isChecked, selectedValue);
+
     });
+    this.checkCollegeSelected();
     console.log(this.selectedDepartments);
 
 
   }
 
-  onSelectDepartment(event: MatCheckboxChange) {
+  onSelectDepartment(allBtn: MatCheckbox, event: MatCheckboxChange) {
     const isChecked = event.checked;
     const selectedValue = event.source.value;
+
+    if (!isChecked && allBtn.checked) {
+      allBtn.indeterminate = true;
+    }
+
     this.insertSelectedDepartment(isChecked, selectedValue);
     console.log(this.selectedDepartments);
 
+    this.checkCollegeSelected();
 
   }
 
@@ -70,18 +86,45 @@ export class AddElectionComponent implements OnInit {
 
 
   addElection() {
-    if (this.selectedDepartments.length < 1) {
-      this.snackbar.open('Please select at least one Department', 'Okay', {
+    if (this.selectedDepartments.length < 1 || this.electionForm.invalid) {
+      this.snackbar.open('Invalid setup please try again.', 'Okay', {
         duration: 5000
       });
 
       return;
     }
 
+    let includeParty = false;
+    let includeColRep = false;
     const ids = this.selectedDepartments.map((dep) => dep.id);
-    console.log(ids);
+    const syId = this.electionForm.value.sy.id;
+    const desc = this.electionForm.value.description;
 
-    console.log(this.includeIndiRef.checked);
+
+
+    if (this.includeIndiRef.checked) {
+      includeParty = true;
+    }
+    if (this.isCollegeSelected) {
+      if (this.includeColRep.checked) {
+        includeColRep = true;
+      }
+    }
+    console.log(ids);
+    console.log(includeParty);
+    console.log(includeColRep);
+    console.log(syId);
+
+
+  }
+
+  checkCollegeSelected() {
+    const findCollege = this.selectedDepartments.find((dep) => dep.name == 'College');
+    if (findCollege != undefined) {
+      this.isCollegeSelected = true;
+    } else {
+      this.isCollegeSelected = false;
+    }
   }
 
 }

@@ -7,10 +7,11 @@ import { OverviewComponent } from './overview/overview.component';
 import { MyElectionsComponent } from './my-elections/my-elections.component';
 import { SettingsComponent } from './settings/settings.component';
 import { CandidacyRequestComponent } from './candidacy-request/candidacy-request.component';
+import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   {
-    path: '', component: IndexComponent, children: [
+    path: '', component: IndexComponent, canActivateChild: [AuthGuard], children: [
       {
         path: '', redirectTo: 'overview', pathMatch: 'full'
       },

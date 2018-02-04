@@ -1,22 +1,28 @@
-<div fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap="gappx">
-  <p>New Position</p>
-  <button tabindex="-1" mat-icon-button mat-dialog-close>
-    <mat-icon>close</mat-icon>
-  </button>
-</div>
+<form (ngSubmit)="addPosition()" >
+  <div fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap="gappx">
+    <p>New Position</p>
+    <button tabindex="-1" mat-icon-button mat-dialog-close>
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
 
 
-<mat-dialog-content>
-  <mat-form-field>
-    <input type="text" matInput placeholder="Position Name">
-  </mat-form-field>
+  <mat-dialog-content [formGroup]="positionForm">
+    <mat-form-field>
+      <input type="text" formControlName="posName" pattern="[a-zA-Z ]*$" matInput placeholder="Position Name">
+    </mat-form-field>
+
+    <mat-form-field>
+      <input type="text" formControlName="winNum" pattern="^[0-9]{1,2}$" matInput placeholder="Number of Winners">
+    </mat-form-field>
 
 
-</mat-dialog-content>
+  </mat-dialog-content>
 
-<mat-dialog-actions fxLayout="column" fxLayoutAlign="center" fxLayoutGap="15px">
+  <mat-dialog-actions fxLayout="column" fxLayoutAlign="center" fxLayoutGap="15px">
 
-  <button mat-raised-button color="primary">Register</button>
-  <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-raised-button type="submit" color="primary">Register</button>
+    <button mat-button mat-dialog-close>Cancel</button>
 
-</mat-dialog-actions>
+  </mat-dialog-actions>
+</form>

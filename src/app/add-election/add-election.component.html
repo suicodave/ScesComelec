@@ -7,25 +7,49 @@
 
 
 <mat-dialog-content>
+
+  <div [formGroup]="electionForm">
+    <mat-form-field>
+      <mat-select placeholder="School Year" formControlName="sy">
+        <mat-option *ngFor="let department of departments" [value]="department">
+          {{ department.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <br>
+    <br>
+    <mat-form-field>
+      <input type="text" formControlName="description" matInput placeholder="Description">
+    </mat-form-field>
+    <br>
+    <br>
+  </div>
+
+
   <span>Select Audience</span>
   <br>
   <br>
+
+
   <div fxLayout="row" fxLayoutAlign="start" fxLayoutGap="25px">
-    <mat-checkbox value="0" (change)="selectAll($event)">All</mat-checkbox>
-    <mat-checkbox #checkInput (change)="onSelectDepartment($event)" *ngFor="let department of departments" [value]="department">
+    <mat-checkbox value="0" #allBtn (change)="selectAll($event)">All</mat-checkbox>
+    <mat-checkbox #checkInput (change)="onSelectDepartment(allBtn,$event)" *ngFor="let department of departments" [value]="department">
       {{department.name}}
     </mat-checkbox>
   </div>
   <br>
   <br>
-  <mat-checkbox #includeIndiRef > Include Independent Party </mat-checkbox>
+  <mat-checkbox #includeColRep *ngIf="isCollegeSelected"> Generate College Representatives </mat-checkbox>
+  <br>
+  <br>
+  <mat-checkbox #includeIndiRef> Allow partylist and generate independent party </mat-checkbox>
 
 
 </mat-dialog-content>
 
 <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="15px">
 
-  <button mat-raised-button color="primary" (click)="addElection()" >Complete Setup</button>
+  <button mat-raised-button color="primary" (click)="addElection()">Complete Setup</button>
   <button mat-button mat-dialog-close>Cancel</button>
 
 </mat-dialog-actions>

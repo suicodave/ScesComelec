@@ -6,7 +6,6 @@
 }
 
 mat-sidenav-container{
-    padding-top: 70px;
     height:100vh;
     width: 100%;
 }
@@ -16,7 +15,7 @@ mat-sidenav{
     width:250px;
     padding-top: 70px;
     @extend .navigation-contents;
-    
+    @include mat-elevation(6); 
     
 }
 
@@ -24,6 +23,8 @@ mat-toolbar{
     @include mat-elevation(7);
     z-index: 7;
     position: fixed;
+    padding-left: 50px;
+    padding-right: 50px;
 }
 
 .active{
@@ -32,6 +33,7 @@ mat-toolbar{
 }
 
 .index-contents{
+    padding-top: 70px;
     height: inherit;
 }
 
@@ -58,3 +60,8 @@ mat-toolbar{
         margin-bottom: 25px;
     }
 }
+
+.spacer{
+    flex: 1 1 auto;
+}
+

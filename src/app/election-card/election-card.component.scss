@@ -1,0 +1,9 @@
+.tab-container{
+    padding: 15px;
+}
+
+.listing{
+    & > mat-card{
+        margin-bottom: 15px;
+    }
+}

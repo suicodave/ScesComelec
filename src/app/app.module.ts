@@ -20,6 +20,15 @@ import { SettingsComponent } from './settings/settings.component';
 import { CandidacyRequestComponent } from './candidacy-request/candidacy-request.component';
 import { AddElectionComponent } from './add-election/add-election.component';
 import { AddPositionComponent } from './modals/add-position/add-position.component';
+import { ElectionCardComponent } from './election-card/election-card.component';
+import { AddCandidateComponent } from './modals/add-candidate/add-candidate.component';
+import { AddPartyComponent } from './modals/add-party/add-party.component';
+import { AuthService } from './services/auth.service';
+import { AuthGuard } from './guards/auth.guard';
+import { CandidateService } from './services/candidate.service';
+import { ElectionService } from './services/election.service';
+import { PartylistService } from './services/partylist.service';
+import { PositionService } from './services/position.service';
 
 @NgModule({
   declarations: [
@@ -32,7 +41,10 @@ import { AddPositionComponent } from './modals/add-position/add-position.compone
     SettingsComponent,
     CandidacyRequestComponent,
     AddElectionComponent,
-    AddPositionComponent
+    AddPositionComponent,
+    ElectionCardComponent,
+    AddCandidateComponent,
+    AddPartyComponent
   ],
   imports: [
     BrowserModule,
@@ -42,12 +54,21 @@ import { AddPositionComponent } from './modals/add-position/add-position.compone
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
-    FlexLayoutModule
+    FlexLayoutModule,
   ],
-  providers: [],
+  providers: [
+    AuthService,
+    AuthGuard,
+    CandidateService,
+    ElectionService,
+    PartylistService,
+    PositionService
+  ],
   entryComponents: [
     AddElectionComponent,
-    AddPositionComponent
+    AddPositionComponent,
+    AddCandidateComponent,
+    AddPartyComponent
   ],
   bootstrap: [AppComponent]
 })
