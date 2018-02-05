@@ -21,7 +21,8 @@
 
   <mat-dialog-actions fxLayout="column" fxLayoutAlign="center" fxLayoutGap="15px">
 
-    <button mat-raised-button type="submit" color="primary">Register</button>
+    <button mat-raised-button type="submit" *ngIf="!isToUpdate" color="primary">Register</button>
+    <button mat-raised-button type="submit" *ngIf="isToUpdate" color="primary">Update</button>
     <button mat-button mat-dialog-close>Cancel</button>
 
   </mat-dialog-actions>

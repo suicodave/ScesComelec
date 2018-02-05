@@ -20,6 +20,8 @@ export class AddCandidateComponent implements OnInit {
   isPartyEnabled;
   foundStudents;
   file;
+  isSearching = false;
+  isRegistering = false;
   // tslint:disable-next-line:max-line-length
   constructor( @Inject(MAT_DIALOG_DATA) private data, private snackbar: MatSnackBar, private fb: FormBuilder, private candidateService: CandidateService, private dialog: MatDialogRef<AddCandidateComponent>) { }
 
@@ -54,7 +56,6 @@ export class AddCandidateComponent implements OnInit {
 
 
       };
-      console.log(event.target.files[0]);
       this.file = event.target.files[0];
 
       reader.readAsDataURL(event.target.files[0]);
@@ -79,14 +80,15 @@ export class AddCandidateComponent implements OnInit {
       this.selectedStudent = selected[0].value;
     }
 
-    console.log(this.selectedStudent);
 
   }
 
   findStudent(query) {
+    this.isSearching = true;
     console.log(query);
     this.candidateService.findStudents(query).subscribe(
       (res: any) => {
+        this.isSearching = false;
         this.foundStudents = res.data;
       }
     );
@@ -114,12 +116,28 @@ export class AddCandidateComponent implements OnInit {
       });
       return;
     }
-
+    this.isRegistering = true;
     // tslint:disable-next-line:max-line-length
-    this.candidateService.registerCandidate(this.data.election.id, this.file, this.selectedStudent.id, this.candidateForm.value.position.id, this.candidateForm.value.aboutMe, this.candidateForm.value.partylist.id || '0').subscribe(
+    this.candidateService.registerCandidate(this.data.election.id, this.file, this.selectedStudent.id, this.candidateForm.value.position.id, this.candidateForm.value.aboutMe, (this.candidateForm.get('partylist') != null) ? this.candidateForm.value.partylist.id : 0).subscribe(
       (res: any) => {
         console.log(res.data);
+        this.candidateService.candidateBehaviorSource.next(1);
+        this.snackbar.open(res.externalMessage, 'Okay', {
+          duration: 5000
+        });
         this.dialog.close();
+      },
+      (err) => {
+        this.isRegistering = false;
+        if ('externalMessage' in err.error) {
+          this.snackbar.open(err.error.externalMessage, 'Okay', {
+            duration: 5000
+          });
+        } else {
+          this.snackbar.open('Operation failed. Please try again.', 'Okay', {
+            duration: 5000
+          });
+        }
       }
     );
 

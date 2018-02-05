@@ -1,25 +1,26 @@
-<form (ngSubmit)="addParty()" >
-    <div fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap="gappx">
-      <p>New Position</p>
-      <button tabindex="-1" mat-icon-button mat-dialog-close>
-        <mat-icon>close</mat-icon>
-      </button>
-    </div>
-  
-  
-    <mat-dialog-content [formGroup]="partyForm">
-      <mat-form-field>
-        <input type="text" formControlName="partyName" pattern="[a-zA-Z ]*$" matInput placeholder="Position Name">
-      </mat-form-field>
-  
-  
-  
-    </mat-dialog-content>
-  
-    <mat-dialog-actions fxLayout="column" fxLayoutAlign="center" fxLayoutGap="15px">
-  
-      <button mat-raised-button type="submit" color="primary">Register</button>
-      <button mat-button mat-dialog-close>Cancel</button>
-  
-    </mat-dialog-actions>
-  </form>
+<form (ngSubmit)="addParty()">
+  <div fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap="gappx">
+    <p>New Partylist</p>
+    <button tabindex="-1" mat-icon-button mat-dialog-close>
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+
+  <mat-dialog-content [formGroup]="partyForm">
+    <mat-form-field>
+      <input type="text" formControlName="partyName" pattern="[a-zA-Z ]*$" matInput placeholder="Position Name">
+    </mat-form-field>
+
+
+
+  </mat-dialog-content>
+
+  <mat-dialog-actions fxLayout="column" fxLayoutAlign="center" fxLayoutGap="15px">
+
+    <button mat-raised-button type="submit" *ngIf="!isToUpdate" color="primary">Register</button>
+    <button mat-raised-button type="submit" *ngIf="isToUpdate" color="primary">Update</button>
+    <button mat-button mat-dialog-close>Cancel</button>
+
+  </mat-dialog-actions>
+</form>

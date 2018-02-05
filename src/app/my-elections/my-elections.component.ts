@@ -15,10 +15,17 @@ export class MyElectionsComponent implements OnInit {
   constructor(private electionService: ElectionService) { }
 
   ngOnInit() {
+    this.electionService.electionState.subscribe((res) => {
+      this.loadContent();
+      console.log('changed');
+
+    });
+  }
+
+  loadContent() {
     this.getPreparedElections();
     this.getActiveElections();
   }
-
 
   getPreparedElections(items?, orderBy?, orderValue?) {
     this.electionService.getElections(1, undefined, undefined, items, orderBy, orderValue)
@@ -42,6 +49,11 @@ export class MyElectionsComponent implements OnInit {
 
   onSelectElection(election) {
     this.selectedElection = election;
+  }
+
+  deleteElection() {
+    this.selectedElection = undefined;
+    this.electionService.addedElectionSource.next(1);
   }
 
 }

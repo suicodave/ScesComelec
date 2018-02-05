@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, Output, EventEmitter } from '@angular/core';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { AddCandidateComponent } from '../modals/add-candidate/add-candidate.component';
 import { AddPositionComponent } from '../modals/add-position/add-position.component';
@@ -6,6 +6,7 @@ import { AddPartyComponent } from '../modals/add-party/add-party.component';
 import { CandidateService } from '../services/candidate.service';
 import { PositionService } from '../services/position.service';
 import { PartylistService } from '../services/partylist.service';
+import { ElectionService } from '../services/election.service';
 @Component({
   selector: 'app-election-card',
   templateUrl: './election-card.component.html',
@@ -13,7 +14,7 @@ import { PartylistService } from '../services/partylist.service';
 })
 export class ElectionCardComponent implements OnInit, OnChanges {
   @Input('election') election;
-
+  @Output() onDelete = new EventEmitter();
   audience;
   schoolYear;
   numberOfStudents;
@@ -21,14 +22,31 @@ export class ElectionCardComponent implements OnInit, OnChanges {
   candidates;
   positions;
   partylists;
+  isDeleting = false;
   // tslint:disable-next-line:max-line-length
-  constructor(private snackbar: MatSnackBar, private dialog: MatDialog, private candidateService: CandidateService, private positionService: PositionService, private partylistService: PartylistService) { }
+  constructor(private snackbar: MatSnackBar, private dialog: MatDialog, private candidateService: CandidateService, private positionService: PositionService, private partylistService: PartylistService, private electionService: ElectionService) { }
 
   ngOnInit() {
 
   }
   ngOnChanges() {
     this.loadContents();
+
+    this.positionService.positionState.subscribe(
+      (res) => {
+        this.getPositions(this.election.id);
+      }
+    );
+    this.partylistService.partyState.subscribe(
+      (res) => {
+        this.getPartylist(this.election.id);
+      }
+    );
+    this.candidateService.candidateState.subscribe(
+      (res) => {
+        this.getCandidates(this.election.id);
+      }
+    );
   }
 
   loadContents() {
@@ -36,9 +54,6 @@ export class ElectionCardComponent implements OnInit, OnChanges {
     this.schoolYear = this.election.school_year;
     this.numberOfStudents = this.election.number_of_students;
     this.accumulatedVotes = this.election.accumulated_votes;
-    this.getCandidates(this.election.id);
-    this.getPositions(this.election.id);
-    this.getPartylist(this.election.id);
   }
 
   addCandidate() {
@@ -52,20 +67,24 @@ export class ElectionCardComponent implements OnInit, OnChanges {
     });
   }
 
-  addPosition() {
+  addPosition(toUpdate = false, position?) {
     this.dialog.open(AddPositionComponent, {
       width: '450px',
       data: {
-        election: this.election
+        election: this.election,
+        toUpdate: toUpdate,
+        position: position
       }
     });
   }
 
-  addParty() {
+  addParty(toUpdate = false, partylist?) {
     this.dialog.open(AddPartyComponent, {
       width: '450px',
       data: {
-        election: this.election
+        election: this.election,
+        toUpdate: toUpdate,
+        partylist: partylist
       }
     });
   }
@@ -75,7 +94,6 @@ export class ElectionCardComponent implements OnInit, OnChanges {
       .subscribe(
       (res: any) => {
         this.candidates = res.data;
-        console.log(this.candidates);
 
       }
       );
@@ -101,6 +119,19 @@ export class ElectionCardComponent implements OnInit, OnChanges {
 
       }
       );
+  }
+
+  deleteElection() {
+    this.isDeleting = true;
+    this.electionService.deleteElection(this.election.id).subscribe(
+      (res: any) => {
+        this.snackbar.open(res.externalMessage, 'Okay', {
+          duration: 5000
+        });
+        this.onDelete.emit();
+        this.isDeleting = false;
+      }
+    );
   }
 
 }

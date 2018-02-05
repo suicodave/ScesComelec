@@ -8,7 +8,7 @@
 
 <mat-dialog-content>
 
-  <div class="tab" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="gappx">
+  <div class="tab" *ngIf="!isRegistering" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="gappx">
 
     <div class="col 1" fxFlex>
       <mat-form-field>
@@ -33,6 +33,9 @@
           College: {{selectedStudent.college?.name}}
         </p>
         <p>
+          School Year : {{selectedStudent.school_year.name}}
+        </p>
+        <p>
           Year Level: {{selectedStudent.year_level.name}}
         </p>
       </div>
@@ -41,7 +44,7 @@
       <br>
       <div [formGroup]="candidateForm">
         <mat-form-field>
-          <mat-select placeholder="Desired Position" formControlName="position" [(value)]="candidateForm.value.position">
+          <mat-select placeholder="Desired Position" formControlName="position">
             <mat-option *ngFor="let position of positions" [value]="position">{{position.name}}</mat-option>
           </mat-select>
         </mat-form-field>
@@ -72,12 +75,19 @@
     </div>
 
     <div class="col 2" fxFlex>
-      <span>Students Found : </span>
-      <mat-selection-list (selectionChange)="onSelectStudent(students,$event)" #students>
-        <mat-list-option [value]="student" *ngFor="let student of foundStudents">
-          {{student.last_name}}, {{student.first_name}} {{student.middle_name}}
-        </mat-list-option>
-      </mat-selection-list>
+      <div class="found-students" *ngIf="!isSearching ">
+        <span>Students Found : {{foundStudents?.length}} </span>
+        <mat-selection-list (selectionChange)="onSelectStudent(students,$event)" #students>
+          <mat-list-option [value]="student" *ngFor="let student of foundStudents">
+            {{student.last_name}}, {{student.first_name}} {{student.middle_name}}
+          </mat-list-option>
+        </mat-selection-list>
+      </div>
+      <div class="searching-student" *ngIf="isSearching" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="15px">
+        <mat-spinner diameter="45" strokeWidth="4"></mat-spinner>
+        <span>Searching Student...</span>
+      </div>
+
     </div>
 
     <div class="col 3" fxFlex fxLayout="column" fxLayoutAlign="center center">
@@ -86,12 +96,17 @@
     </div>
   </div>
 
+  <div fxLayout="column" *ngIf="isRegistering" fxLayoutAlign="center center" fxLayoutGap="15px">
+    <mat-spinner diameter="55" strokeWidth="4"></mat-spinner>
+    <span>Registering Candidate...</span>
+  </div>
+
 
 
 
 </mat-dialog-content>
 
-<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="15px">
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="15px" *ngIf="!isRegistering" >
 
   <button mat-raised-button color="primary" (click)="registerCandidate()">Register Candidate</button>
   <button mat-button mat-dialog-close>Cancel</button>

@@ -1,7 +1,11 @@
 import { Component, OnInit, ViewChildren, QueryList, ViewChild } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { MatCheckboxChange, MatCheckbox, MatSnackBar } from '@angular/material';
+import { MatCheckboxChange, MatCheckbox, MatSnackBar, MatDialogRef } from '@angular/material';
+import { ElectionService } from '../services/election.service';
+import { SchoolSettingsService } from '../services/school-settings.service';
+import 'rxjs/add/operator/pluck';
 
+import { combineLatest } from 'rxjs/observable/combineLatest';
 @Component({
   selector: 'app-add-election',
   templateUrl: './add-election.component.html',
@@ -11,18 +15,16 @@ export class AddElectionComponent implements OnInit {
   @ViewChildren('checkInput') checkInputs: QueryList<MatCheckbox>;
   @ViewChild('includeIndiRef') includeIndiRef: MatCheckbox;
   @ViewChild('includeColRep') includeColRep: MatCheckbox;
-  departments = [
-    { id: 1, name: 'College' },
-    { id: 2, name: 'Senior High' },
-    { id: 3, name: 'Junior High' },
-    { id: 4, name: 'Elementary' },
-  ];
+  departments;
+  schoolYears;
 
   selectedDepartments = [];
   isCollegeSelected = false;
   electionForm: FormGroup;
+  isSettingsLoaded = false;
 
-  constructor(private fb: FormBuilder, private snackbar: MatSnackBar) {
+  // tslint:disable-next-line:max-line-length
+  constructor(private fb: FormBuilder, private snackbar: MatSnackBar, private dialogRef: MatDialogRef<AddElectionComponent>, private schoolSettingService: SchoolSettingsService, private electionService: ElectionService) {
 
   }
 
@@ -31,10 +33,29 @@ export class AddElectionComponent implements OnInit {
   }
 
   initForm() {
-    this.electionForm = this.fb.group({
-      sy: ['', [Validators.required]],
-      description: ['', [Validators.required]]
-    });
+
+    const getSchoolYears = this.schoolSettingService.getSchoolYears().pluck('data');
+    const getActiveSY = this.schoolSettingService.getActiveSchoolYear().pluck('data');
+    const getCurrentDepartment = this.schoolSettingService.getDepartments().pluck('data');
+
+    combineLatest([getSchoolYears, getActiveSY, getCurrentDepartment]).subscribe(
+      (res: any) => {
+        console.log(res);
+
+        this.schoolYears = res[0];
+        this.departments = res[2];
+        this.electionForm = this.fb.group({
+          sy: [res[1].id, [Validators.required]],
+          description: ['', [Validators.required]]
+        });
+
+        this.isSettingsLoaded = true;
+
+      }
+    );
+
+
+
   }
 
 
@@ -97,7 +118,7 @@ export class AddElectionComponent implements OnInit {
     let includeParty = false;
     let includeColRep = false;
     const ids = this.selectedDepartments.map((dep) => dep.id);
-    const syId = this.electionForm.value.sy.id;
+    const syId = this.electionForm.value.sy;
     const desc = this.electionForm.value.description;
 
 
@@ -115,6 +136,15 @@ export class AddElectionComponent implements OnInit {
     console.log(includeColRep);
     console.log(syId);
 
+    this.electionService.registerElection(syId, desc, ids, includeParty, includeColRep).subscribe(
+      (res: any) => {
+        this.electionService.addedElectionSource.next(1);
+        this.snackbar.open(res.externalMessage, 'Okay', {
+          duration: 5000
+        });
+        this.dialogRef.close();
+      }
+    );
 
   }
 

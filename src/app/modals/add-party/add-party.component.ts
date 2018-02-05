@@ -10,17 +10,27 @@ import { PartylistService } from '../../services/partylist.service';
 })
 export class AddPartyComponent implements OnInit {
   partyForm: FormGroup;
+  isToUpdate = false;
+  partylist;
   // tslint:disable-next-line:max-line-length
   constructor( @Inject(MAT_DIALOG_DATA) private data, private fb: FormBuilder, private snackbar: MatSnackBar, private dialogRef: MatDialogRef<AddPartyComponent>, private partyService: PartylistService) { }
 
   ngOnInit() {
     this.initForms();
+
   }
 
   initForms() {
+    this.isToUpdate = this.data.toUpdate;
+
     this.partyForm = this.fb.group({
       partyName: ['', [Validators.required]]
     });
+
+    if (this.isToUpdate) {
+      this.partylist = this.data.partylist;
+      this.partyForm.patchValue({ partyName: this.partylist.name });
+    }
   }
 
   addParty() {
@@ -32,9 +42,14 @@ export class AddPartyComponent implements OnInit {
     }
 
 
-    this.partyService.registerPartylist(this.data.election.id, this.partyForm.value.partyName).subscribe(
+
+    // tslint:disable-next-line:max-line-length
+    this.partyService.registerPartylist(this.data.election.id, this.partyForm.value.partyName, (this.isToUpdate) ? this.partylist.id : undefined).subscribe(
       (res: any) => {
-        console.log(res.data);
+        this.partyService.partyBehaviorSource.next(1);
+        this.snackbar.open(res.externalMessage, 'Okay', {
+          duration: 5000
+        });
         this.dialogRef.close();
       }
     );

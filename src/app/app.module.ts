@@ -29,6 +29,7 @@ import { CandidateService } from './services/candidate.service';
 import { ElectionService } from './services/election.service';
 import { PartylistService } from './services/partylist.service';
 import { PositionService } from './services/position.service';
+import { SchoolSettingsService } from './services/school-settings.service';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import { PositionService } from './services/position.service';
     CandidateService,
     ElectionService,
     PartylistService,
-    PositionService
+    PositionService,
+    SchoolSettingsService
   ],
   entryComponents: [
     AddElectionComponent,

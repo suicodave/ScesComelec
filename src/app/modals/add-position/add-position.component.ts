@@ -10,6 +10,8 @@ import { PositionService } from '../../services/position.service';
 })
 export class AddPositionComponent implements OnInit {
   positionForm: FormGroup;
+  isToUpdate;
+  position;
   // tslint:disable-next-line:max-line-length
   constructor( @Inject(MAT_DIALOG_DATA) private data, private fb: FormBuilder, private snackbar: MatSnackBar, private dialogRef: MatDialogRef<AddPositionComponent>, private positionService: PositionService) { }
 
@@ -19,10 +21,20 @@ export class AddPositionComponent implements OnInit {
 
 
   initForm() {
+    this.isToUpdate = this.data.toUpdate;
+
     this.positionForm = this.fb.group({
       posName: ['', [Validators.required]],
       winNum: ['', [Validators.required]]
     });
+
+    if (this.isToUpdate) {
+      this.position = this.data.position;
+      this.positionForm.patchValue({
+        posName: this.position.name,
+        winNum: this.position.number_of_winners
+      });
+    }
   }
 
 
@@ -31,15 +43,16 @@ export class AddPositionComponent implements OnInit {
       this.snackbar.open('Invalid form please try again.', 'Okay', {
         duration: 5000
       });
-      console.log(this.positionForm);
-
-
       return;
     }
 
-    this.positionService.registerPosition(this.data.election.id, this.positionForm.value.posName, this.positionForm.value.winNum).subscribe(
+    // tslint:disable-next-line:max-line-length
+    this.positionService.registerPosition(this.data.election.id, this.positionForm.value.posName, this.positionForm.value.winNum, (this.isToUpdate) ? this.position.id : undefined).subscribe(
       (res: any) => {
-        console.log(res.data);
+        this.positionService.positionBehaviorSource.next(1);
+        this.snackbar.open(res.externalMessage, 'Okay', {
+          duration: 5000
+        });
         this.dialogRef.close();
       }
     );

@@ -24,7 +24,7 @@
       </div>
       <mat-card-content>
         <mat-list>
-      
+
           <mat-list-item *ngFor="let election of myActiveElections" (click)="onSelectElection(election)">
             {{election.description}}
           </mat-list-item>
@@ -57,7 +57,7 @@
   <!-- row2 -->
   <div fxLayout="row" fxFlex="50" fxLayoutAlign="start" fxLayoutGap="25px">
 
-    <app-election-card #electionCard [election]="selectedElection" *ngIf="selectedElection" fxFlex></app-election-card>
+    <app-election-card #electionCard (onDelete)="deleteElection()" [election]="selectedElection" *ngIf="selectedElection" fxFlex></app-election-card>
   </div>
 
 </div>

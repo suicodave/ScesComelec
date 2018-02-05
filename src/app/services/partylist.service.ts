@@ -2,21 +2,31 @@ import { Injectable } from '@angular/core';
 import { apiHeaders, apiUrl } from '../interfaces/global';
 import { AuthService } from './auth.service';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
-
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 @Injectable()
 export class PartylistService {
 
+  partyBehaviorSource = new BehaviorSubject<number>(0);
+  partyState = this.partyBehaviorSource.asObservable();
   constructor(private authService: AuthService, private http: HttpClient) { }
 
-  registerPartylist(electionId, name) {
+  registerPartylist(electionId, name, partyId = null) {
 
     const body = {
       'name': name
     };
 
-    return this.http.post(apiUrl + `elections/${electionId}/partylists`, body, {
-      headers: apiHeaders.append('Authorization', `Bearer ${this.authService.checkToken()}`)
-    });
+    if (partyId) {
+      return this.http.patch(apiUrl + `elections/${electionId}/partylists/${partyId}`, body, {
+        headers: apiHeaders.append('Authorization', `Bearer ${this.authService.checkToken()}`)
+      });
+    } else {
+      return this.http.post(apiUrl + `elections/${electionId}/partylists`, body, {
+        headers: apiHeaders.append('Authorization', `Bearer ${this.authService.checkToken()}`)
+      });
+    }
+
+
   }
 
   getPartylist(election_id, items = 15, orderBy = 'id', orderValue = 'desc') {
