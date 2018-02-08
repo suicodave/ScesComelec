@@ -22,6 +22,7 @@ export class AddElectionComponent implements OnInit {
   isCollegeSelected = false;
   electionForm: FormGroup;
   isSettingsLoaded = false;
+  isRegistering = false;
 
   // tslint:disable-next-line:max-line-length
   constructor(private fb: FormBuilder, private snackbar: MatSnackBar, private dialogRef: MatDialogRef<AddElectionComponent>, private schoolSettingService: SchoolSettingsService, private electionService: ElectionService) {
@@ -40,7 +41,6 @@ export class AddElectionComponent implements OnInit {
 
     combineLatest([getSchoolYears, getActiveSY, getCurrentDepartment]).subscribe(
       (res: any) => {
-        console.log(res);
 
         this.schoolYears = res[0];
         this.departments = res[2];
@@ -68,7 +68,6 @@ export class AddElectionComponent implements OnInit {
 
     });
     this.checkCollegeSelected();
-    console.log(this.selectedDepartments);
 
 
   }
@@ -82,7 +81,6 @@ export class AddElectionComponent implements OnInit {
     }
 
     this.insertSelectedDepartment(isChecked, selectedValue);
-    console.log(this.selectedDepartments);
 
     this.checkCollegeSelected();
 
@@ -131,17 +129,20 @@ export class AddElectionComponent implements OnInit {
         includeColRep = true;
       }
     }
-    console.log(ids);
-    console.log(includeParty);
-    console.log(includeColRep);
-    console.log(syId);
-
+    this.isRegistering = true;
     this.electionService.registerElection(syId, desc, ids, includeParty, includeColRep).subscribe(
       (res: any) => {
-        this.electionService.addedElectionSource.next(1);
+        this.electionService.behaviorSource.next(1);
         this.snackbar.open(res.externalMessage, 'Okay', {
           duration: 5000
         });
+
+      },
+      (err) => {
+        console.log(err);
+        this.isRegistering = false;
+      },
+      () => {
         this.dialogRef.close();
       }
     );

@@ -1,22 +1,32 @@
 <form (ngSubmit)="addParty()">
-  <div fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap="gappx">
-    <p>New Partylist</p>
-    <button tabindex="-1" mat-icon-button mat-dialog-close>
-      <mat-icon>close</mat-icon>
-    </button>
+
+  <div class="show-when-registering" *ngIf="isProcessing" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="15px">
+    <mat-spinner diameter="55" strokeWidth="4"></mat-spinner>
+    <span>Processing Data...</span>
+  </div>
+
+  <div class="show-when-processing" *ngIf="!isProcessing">
+    <div fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap="gappx">
+      <p>New Partylist</p>
+      <button tabindex="-1" mat-icon-button mat-dialog-close>
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+
+    <mat-dialog-content [formGroup]="partyForm">
+      <mat-form-field>
+        <input type="text" formControlName="partyName" pattern="[a-zA-Z ]*$" matInput placeholder="Position Name">
+      </mat-form-field>
+
+
+
+    </mat-dialog-content>
   </div>
 
 
-  <mat-dialog-content [formGroup]="partyForm">
-    <mat-form-field>
-      <input type="text" formControlName="partyName" pattern="[a-zA-Z ]*$" matInput placeholder="Position Name">
-    </mat-form-field>
 
-
-
-  </mat-dialog-content>
-
-  <mat-dialog-actions fxLayout="column" fxLayoutAlign="center" fxLayoutGap="15px">
+  <mat-dialog-actions fxLayout="column" fxLayoutAlign="center" fxLayoutGap="15px" *ngIf="!isProcessing">
 
     <button mat-raised-button type="submit" *ngIf="!isToUpdate" color="primary">Register</button>
     <button mat-raised-button type="submit" *ngIf="isToUpdate" color="primary">Update</button>

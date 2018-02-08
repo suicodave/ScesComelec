@@ -12,6 +12,7 @@ export class AddPartyComponent implements OnInit {
   partyForm: FormGroup;
   isToUpdate = false;
   partylist;
+  isProcessing = false;
   // tslint:disable-next-line:max-line-length
   constructor( @Inject(MAT_DIALOG_DATA) private data, private fb: FormBuilder, private snackbar: MatSnackBar, private dialogRef: MatDialogRef<AddPartyComponent>, private partyService: PartylistService) { }
 
@@ -41,15 +42,25 @@ export class AddPartyComponent implements OnInit {
       return;
     }
 
-
+    this.isProcessing = true;
 
     // tslint:disable-next-line:max-line-length
     this.partyService.registerPartylist(this.data.election.id, this.partyForm.value.partyName, (this.isToUpdate) ? this.partylist.id : undefined).subscribe(
       (res: any) => {
-        this.partyService.partyBehaviorSource.next(1);
+        this.partyService.behaviorSource.next(1);
         this.snackbar.open(res.externalMessage, 'Okay', {
           duration: 5000
         });
+
+
+      },
+      (err) => {
+        console.log(err);
+
+        this.isProcessing = false;
+        this.dialogRef.close();
+      },
+      () => {
         this.dialogRef.close();
       }
     );

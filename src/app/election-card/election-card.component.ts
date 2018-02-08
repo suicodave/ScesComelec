@@ -7,6 +7,8 @@ import { CandidateService } from '../services/candidate.service';
 import { PositionService } from '../services/position.service';
 import { PartylistService } from '../services/partylist.service';
 import { ElectionService } from '../services/election.service';
+import { DeleteComponent } from '../modals/delete/delete.component';
+import { ShowCandidateComponent } from '../modals/show-candidate/show-candidate.component';
 @Component({
   selector: 'app-election-card',
   templateUrl: './election-card.component.html',
@@ -22,7 +24,15 @@ export class ElectionCardComponent implements OnInit, OnChanges {
   candidates;
   positions;
   partylists;
-  isDeleting = false;
+  isCandidateLoading = false;
+  isPartylistLoading = false;
+  isPositionLoading = false;
+  serviceClasses = [
+    this.candidateService,
+    this.positionService,
+    this.partylistService,
+    this.electionService
+  ];
   // tslint:disable-next-line:max-line-length
   constructor(private snackbar: MatSnackBar, private dialog: MatDialog, private candidateService: CandidateService, private positionService: PositionService, private partylistService: PartylistService, private electionService: ElectionService) { }
 
@@ -32,17 +42,17 @@ export class ElectionCardComponent implements OnInit, OnChanges {
   ngOnChanges() {
     this.loadContents();
 
-    this.positionService.positionState.subscribe(
+    this.positionService.behaviorState.subscribe(
       (res) => {
         this.getPositions(this.election.id);
       }
     );
-    this.partylistService.partyState.subscribe(
+    this.partylistService.behaviorState.subscribe(
       (res) => {
         this.getPartylist(this.election.id);
       }
     );
-    this.candidateService.candidateState.subscribe(
+    this.candidateService.behaviorState.subscribe(
       (res) => {
         this.getCandidates(this.election.id);
       }
@@ -90,48 +100,70 @@ export class ElectionCardComponent implements OnInit, OnChanges {
   }
 
   getCandidates(electionId, items?, orderBy?, orderValue?) {
+    this.isCandidateLoading = true;
     this.candidateService.getCandidates(electionId, items, orderBy, orderValue)
       .subscribe(
       (res: any) => {
         this.candidates = res.data;
-
+        this.isCandidateLoading = false;
       }
       );
   }
 
   getPositions(electionId, items?, orderBy?, orderValue?) {
+    this.isPositionLoading = true;
     this.positionService.getPositions(electionId, items, orderBy, orderValue)
       .subscribe(
       (res: any) => {
         this.positions = res.data;
-        console.log(this.positions);
+        this.isPositionLoading = false;
 
       }
       );
   }
 
   getPartylist(electionId, items?, orderBy?, orderValue?) {
+    this.isPartylistLoading = true;
     this.partylistService.getPartylist(electionId, items, orderBy, orderValue)
       .subscribe(
       (res: any) => {
         this.partylists = res.data;
-        console.log(this.partylists);
-
+        this.isPartylistLoading = false;
       }
       );
   }
 
-  deleteElection() {
-    this.isDeleting = true;
-    this.electionService.deleteElection(this.election.id).subscribe(
-      (res: any) => {
-        this.snackbar.open(res.externalMessage, 'Okay', {
-          duration: 5000
-        });
-        this.onDelete.emit();
-        this.isDeleting = false;
+
+
+  candidateInfo(candidate) {
+
+    this.dialog.open(ShowCandidateComponent, {
+      width: '70%',
+      data: {
+        election: this.election,
+        candidate: candidate,
+        panelClass: 'candidate-profile'
       }
-    );
+    });
+
+  }
+
+  delete(serviceClass: any, id, deleteSubject) {
+
+    const dialogRef = this.dialog.open(DeleteComponent, {
+      width: '450px',
+      data: {
+        election: this.election,
+        serviceClass: serviceClass,
+        id: id,
+        deleteSubject: deleteSubject
+      }
+    });
+
+    const deletedElection = dialogRef.componentInstance.onElectionDeleted.subscribe((res) => {
+      this.onDelete.emit();
+    });
+
   }
 
 }

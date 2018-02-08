@@ -12,6 +12,7 @@ export class AddPositionComponent implements OnInit {
   positionForm: FormGroup;
   isToUpdate;
   position;
+  isProcessing = false;
   // tslint:disable-next-line:max-line-length
   constructor( @Inject(MAT_DIALOG_DATA) private data, private fb: FormBuilder, private snackbar: MatSnackBar, private dialogRef: MatDialogRef<AddPositionComponent>, private positionService: PositionService) { }
 
@@ -45,14 +46,23 @@ export class AddPositionComponent implements OnInit {
       });
       return;
     }
-
+    this.isProcessing = true;
     // tslint:disable-next-line:max-line-length
     this.positionService.registerPosition(this.data.election.id, this.positionForm.value.posName, this.positionForm.value.winNum, (this.isToUpdate) ? this.position.id : undefined).subscribe(
       (res: any) => {
-        this.positionService.positionBehaviorSource.next(1);
+        this.positionService.behaviorSource.next(1);
         this.snackbar.open(res.externalMessage, 'Okay', {
           duration: 5000
         });
+
+      },
+      (err) => {
+        console.log(err);
+        this.isProcessing = false;
+        this.dialogRef.close();
+      },
+      () => {
+        this.isProcessing = false;
         this.dialogRef.close();
       }
     );

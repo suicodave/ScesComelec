@@ -9,17 +9,12 @@
 
   <mat-card-content>
 
-    <br>
-    <div class="show-when-deleting" *ngIf="isDeleting" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="15px">
-      <mat-spinner diameter="65" strokeWidth="4"></mat-spinner>
-      <p>Deleting Election</p>
-    </div>
 
-    <div class="hide-when-deleting" *ngIf="!isDeleting">
+    <div class="hide-when-deleting">
       <p>
         Election Id : {{election.id}}
-        <button mat-icon-button color="warn" (click)="deleteElection()">
-          <mat-icon>delete_forever</mat-icon>
+        <button mat-icon-button color="warn" (click)="delete(electionService,election.id,'election')">
+          <mat-icon>delete</mat-icon>
         </button>
       </p>
 
@@ -41,31 +36,54 @@
 
         <!-- CandidatesSection -->
         <mat-tab label="Candidates">
+
           <div class="tab-container">
-            <button (click)="addCandidate()" matTooltip="Register Candidate" matTooltipClass="tooltipStyle" matTooltipPosition="after"
-              mat-icon-button>
-              <mat-icon>add</mat-icon>
-            </button>
 
-            <div class="listing" fxLayout="row wrap" fxLayoutAlign="start" fxLayoutGap="15px">
-              <mat-card *ngFor="let candidate of candidates" fxFlex="30">
-                <p>
+            <div fxLayout="column" *ngIf="isCandidateLoading" fxLayoutAlign="center center" fxLayoutGap="15px">
+              <mat-spinner diameter="55" strokeWidth="4"></mat-spinner>
+              <span>Loading Data...</span>
+            </div>
 
-                  Name: {{candidate.student_profile.last_name}}, {{candidate.student_profile.first_name}}
-                </p>
-                <p>
-                  Position : {{candidate.position.name}}
-                </p>
-                <p *ngIf="election.is_party_enabled">
-                  Partylist: {{candidate.partylist?.name}}
-                </p>
-                <p>
-                  Department: {{candidate.student_profile.department.name}}
-                </p>
-                <p *ngIf="candidate.student_profile.college">
-                  College : {{candidate.student_profile.college?.name}} {{candidate.student_profile.year_level.name}}
-                </p>
-              </mat-card>
+            <div class="show-when-loaded" *ngIf="!isCandidateLoading">
+              <button (click)="addCandidate()" matTooltip="Register Candidate" matTooltipClass="tooltipStyle" matTooltipPosition="after"
+                mat-icon-button>
+                <mat-icon>add</mat-icon>
+              </button>
+
+              <div class="listing" fxLayout="row wrap" fxLayoutAlign="start " fxLayoutGap="15px">
+
+
+                <mat-card *ngFor="let candidate of candidates" fxFlex="31">
+                  <p>
+                    Candidate ID: {{candidate.id}}
+                    <button mat-icon-button color="warn" (click)="delete(candidateService,candidate.id,'candidate')">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </p>
+
+                  <div (click)="candidateInfo(candidate)">
+                    <p>
+
+                      Name: {{candidate.student_profile.last_name}}, {{candidate.student_profile.first_name}} {{candidate.student_profile.middle_name}}
+                    </p>
+                    <p>
+                      Position : {{candidate.position.name}}
+                    </p>
+                    <p *ngIf="election.is_party_enabled">
+                      Partylist: {{candidate.partylist?.name}}
+                    </p>
+                    <p>
+                      Department: {{candidate.student_profile.department.name}}
+                    </p>
+                    <p *ngIf="candidate.student_profile.college">
+                      College : {{candidate.student_profile.college?.name}} {{candidate.student_profile.year_level.name}}
+                    </p>
+                  </div>
+
+                </mat-card>
+
+
+              </div>
             </div>
 
           </div>
@@ -75,47 +93,84 @@
 
         <!-- PositionsSection -->
         <mat-tab label="Positions">
+
+
           <div class="tab-container">
-            <button (click)="addPosition()" matTooltip="Add Positions" matTooltipClass="tooltipStyle" matTooltipPosition="after" mat-icon-button>
-              <mat-icon>add</mat-icon>
-            </button>
-
-            <div class="listing" fxLayout="row wrap" fxLayoutAlign="start" fxLayoutGap="15px">
-              <mat-card *ngFor="let position of positions" fxFlex="30" (click)="addPosition(true,position)">
-                <p>
-
-                  Name: {{position.name}}
-                </p>
-                <p>
-                  Number of Winners: {{position.number_of_winners}}
-                </p>
-                <p>
-                  College Representative : {{ position.is_colrep ? 'Yes' : 'No' }}
-                </p>
-              </mat-card>
+            <div fxLayout="column" *ngIf="isPositionLoading" fxLayoutAlign="center center" fxLayoutGap="15px">
+              <mat-spinner diameter="55" strokeWidth="4"></mat-spinner>
+              <span>Loading Data...</span>
             </div>
+            <div class="show-when-loaded" *ngIf="!isPositionLoading">
+              <button (click)="addPosition()" matTooltip="Add Positions" matTooltipClass="tooltipStyle" matTooltipPosition="after" mat-icon-button>
+                <mat-icon>add</mat-icon>
+              </button>
+
+              <div class="listing" fxLayout="row wrap" fxLayoutAlign="start" fxLayoutGap="15px">
+                <mat-card *ngFor="let position of positions" fxFlex="30">
+                  <p>
+                    ID : {{position.id}}
+                    <button mat-icon-button color="warn" (click)="delete(positionService,position.id,'position')">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </p>
+                  <div (click)="addPosition(true,position)">
+                    <p>
+                      Name: {{position.name}}
+                    </p>
+                    <p>
+                      Number of Winners: {{position.number_of_winners}}
+                    </p>
+                    <p>
+                      College Representative : {{ position.is_colrep ? 'Yes' : 'No' }}
+                    </p>
+                  </div>
+
+                </mat-card>
+              </div>
+            </div>
+
           </div>
         </mat-tab>
 
 
         <!-- PartiesSection -->
         <mat-tab label="Parties" *ngIf="election.is_party_enabled">
+
           <div class="tab-container">
-            <button (click)="addParty()" matTooltip="Add Party" matTooltipClass="tooltipStyle" matTooltipPosition="after" mat-icon-button>
-              <mat-icon>add</mat-icon>
-            </button>
 
-            <div class="listing" fxLayout="row wrap" fxLayoutAlign="start" fxLayoutGap="15px">
-              <mat-card *ngFor="let partylist of partylists" fxFlex="30" (click)="addParty(true,partylist)">
-                <p>
-                  Name: {{partylist.name}}
-                </p>
-                <p>
-                  Independent Party: {{partylist.is_independent ? 'Yes' : 'No'}}
-                </p>
-
-              </mat-card>
+            <div fxLayout="column" *ngIf="isPartylistLoading" fxLayoutAlign="center center" fxLayoutGap="15px">
+              <mat-spinner diameter="55" strokeWidth="4"></mat-spinner>
+              <span>Loading Data...</span>
             </div>
+
+            <div class="show-when-loaded" *ngIf="!isPartylistLoading">
+              <button (click)="addParty()" matTooltip="Add Party" matTooltipClass="tooltipStyle" matTooltipPosition="after" mat-icon-button>
+                <mat-icon>add</mat-icon>
+              </button>
+
+              <div class="listing" fxLayout="row wrap" fxLayoutAlign="start" fxLayoutGap="15px">
+                <mat-card *ngFor="let partylist of partylists" fxFlex="30">
+                  <p>
+                    ID : {{partylist.id}}
+                    <button mat-icon-button color="warn" (click)="delete(partylistService,partylist.id,'partylist')">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </p>
+                  <div (click)="addParty(true,partylist)">
+                    <p>
+                      Name: {{partylist.name}}
+                    </p>
+                    <p>
+                      Independent Party: {{partylist.is_independent ? 'Yes' : 'No'}}
+                    </p>
+                  </div>
+
+
+                </mat-card>
+              </div>
+            </div>
+
+
           </div>
         </mat-tab>
 

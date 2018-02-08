@@ -15,7 +15,7 @@ export class MyElectionsComponent implements OnInit {
   constructor(private electionService: ElectionService) { }
 
   ngOnInit() {
-    this.electionService.electionState.subscribe((res) => {
+    this.electionService.behaviorState.subscribe((res) => {
       this.loadContent();
       console.log('changed');
 
@@ -53,7 +53,7 @@ export class MyElectionsComponent implements OnInit {
 
   deleteElection() {
     this.selectedElection = undefined;
-    this.electionService.addedElectionSource.next(1);
+    this.electionService.behaviorSource.next(1);
   }
 
 }

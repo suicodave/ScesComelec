@@ -6,8 +6,8 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 @Injectable()
 export class CandidateService {
 
-  candidateBehaviorSource = new BehaviorSubject<number>(0);
-  candidateState = this.candidateBehaviorSource.asObservable();
+  behaviorSource = new BehaviorSubject<number>(0);
+  behaviorState = this.behaviorSource.asObservable();
   constructor(private authService: AuthService, private http: HttpClient) { }
 
   registerCandidate(electionId, file, studentId, positonId, aboutMe, partylistId = 0) {
@@ -46,6 +46,12 @@ export class CandidateService {
     return this.http.get(apiUrl + 'students', {
       headers: apiHeaders.append('Authorization', `Bearer ${this.authService.checkToken()}`),
       params: params
+    });
+  }
+
+  delete(id, electionId) {
+    return this.http.delete(apiUrl + `elections/${electionId}/candidates/${id}`, {
+      headers: apiHeaders.append('Authorization', `Bearer ${this.authService.checkToken()}`)
     });
   }
 

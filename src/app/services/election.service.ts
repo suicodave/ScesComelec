@@ -5,8 +5,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 @Injectable()
 export class ElectionService {
-  addedElectionSource = new BehaviorSubject<number>(0);
-  electionState = this.addedElectionSource.asObservable();
+  behaviorSource = new BehaviorSubject<number>(0);
+  behaviorState = this.behaviorSource.asObservable();
   constructor(private authService: AuthService, private http: HttpClient) { }
 
   getElections(myElection = 0, isActive = 0, isPublished = 0, items = 15, orderBy = 'id', orderValue = 'desc') {
@@ -43,10 +43,9 @@ export class ElectionService {
     });
   }
 
-  deleteElection(electionId) {
-
+  delete(id, electionId) {
     return this.http.delete(apiUrl + `elections/${electionId}`, {
-      headers: apiHeaders.append('Authorization', `Bearer ${this.authService.checkToken()}`),
+      headers: apiHeaders.append('Authorization', `Bearer ${this.authService.checkToken()}`)
     });
   }
 

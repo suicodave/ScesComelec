@@ -121,7 +121,7 @@ export class AddCandidateComponent implements OnInit {
     this.candidateService.registerCandidate(this.data.election.id, this.file, this.selectedStudent.id, this.candidateForm.value.position.id, this.candidateForm.value.aboutMe, (this.candidateForm.get('partylist') != null) ? this.candidateForm.value.partylist.id : 0).subscribe(
       (res: any) => {
         console.log(res.data);
-        this.candidateService.candidateBehaviorSource.next(1);
+        this.candidateService.behaviorSource.next(1);
         this.snackbar.open(res.externalMessage, 'Okay', {
           duration: 5000
         });

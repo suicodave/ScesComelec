@@ -1,0 +1,24 @@
+<mat-dialog-content>
+
+
+
+  <img mat-card-image [src]="candidate.profile_image" alt="Candidate Photo">
+  <p>
+    Name : {{candidate.student_profile.last_name}}, {{candidate.student_profile.first_name}} {{candidate.student_profile.middle_name}}
+  </p>
+  <p>
+    Position : {{candidate.position.name}}
+  </p>
+  <p *ngIf="election.is_party_enabled">
+    Partylist: {{candidate.partylist?.name}}
+  </p>
+  <p>
+    About Me : {{candidate.about_me}}
+  </p>
+
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="end" fxLayoutGap="15px">
+  <button mat-dialog-close mat-button>Close</button>
+</mat-dialog-actions>

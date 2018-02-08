@@ -30,6 +30,9 @@ import { ElectionService } from './services/election.service';
 import { PartylistService } from './services/partylist.service';
 import { PositionService } from './services/position.service';
 import { SchoolSettingsService } from './services/school-settings.service';
+import { DeleteComponent } from './modals/delete/delete.component';
+import { CapitalizePipe } from './pipes/capitalize.pipe';
+import { ShowCandidateComponent } from './modals/show-candidate/show-candidate.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +48,10 @@ import { SchoolSettingsService } from './services/school-settings.service';
     AddPositionComponent,
     ElectionCardComponent,
     AddCandidateComponent,
-    AddPartyComponent
+    AddPartyComponent,
+    DeleteComponent,
+    CapitalizePipe,
+    ShowCandidateComponent
   ],
   imports: [
     BrowserModule,
@@ -70,7 +76,9 @@ import { SchoolSettingsService } from './services/school-settings.service';
     AddElectionComponent,
     AddPositionComponent,
     AddCandidateComponent,
-    AddPartyComponent
+    AddPartyComponent,
+    DeleteComponent,
+    ShowCandidateComponent
   ],
   bootstrap: [AppComponent]
 })

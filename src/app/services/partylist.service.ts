@@ -6,8 +6,8 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 @Injectable()
 export class PartylistService {
 
-  partyBehaviorSource = new BehaviorSubject<number>(0);
-  partyState = this.partyBehaviorSource.asObservable();
+  behaviorSource = new BehaviorSubject<number>(0);
+  behaviorState = this.behaviorSource.asObservable();
   constructor(private authService: AuthService, private http: HttpClient) { }
 
   registerPartylist(electionId, name, partyId = null) {
@@ -29,15 +29,23 @@ export class PartylistService {
 
   }
 
-  getPartylist(election_id, items = 15, orderBy = 'id', orderValue = 'desc') {
+  getPartylist(electionId, items = 15, orderBy = 'id', orderValue = 'desc') {
     const params = new HttpParams()
       .set('items', items.toString())
       .set('orderBy', orderBy)
       .set('orderValue', orderValue);
-    return this.http.get(apiUrl + `elections/${election_id}/partylists`, {
+    return this.http.get(apiUrl + `elections/${electionId}/partylists`, {
       headers: apiHeaders.append('Authorization', `Bearer ${this.authService.checkToken()}`),
       params: params
     });
+  }
+
+  delete(id, electionId) {
+
+    return this.http.delete(apiUrl + `elections/${electionId}/partylists/${id}`, {
+      headers: apiHeaders.append('Authorization', `Bearer ${this.authService.checkToken()}`)
+    });
+
   }
 
 

@@ -8,55 +8,61 @@
 
 <mat-dialog-content>
 
-  <div class="loader" *ngIf="!isSettingsLoaded" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="15px"> 
+  <div class="show-when-registering" *ngIf="isRegistering" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="15px">
     <mat-spinner diameter="55" strokeWidth="4"></mat-spinner>
-    <span>Loading Settings...</span>
+    <span>Registering Election...</span>
   </div>
 
-  <div class="hasloaded" *ngIf="isSettingsLoaded">
-    <div [formGroup]="electionForm">
-      <mat-form-field>
-        <mat-select placeholder="School Year" [(value)]="electionForm.value.sy" formControlName="sy">
-          <mat-option *ngFor="let schoolYear of schoolYears" [value]="schoolYear.id">
-            {{ schoolYear.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <br>
-      <br>
-      <mat-form-field>
-        <input type="text" formControlName="description" matInput placeholder="Description">
-      </mat-form-field>
-      <br>
-      <br>
+  <div *ngIf="!isRegistering" class="hide-when-registering">
+    <div class="loader" *ngIf="!isSettingsLoaded" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="15px">
+      <mat-spinner diameter="55" strokeWidth="4"></mat-spinner>
+      <span>Loading Settings...</span>
     </div>
 
+    <div class="hasloaded" *ngIf="isSettingsLoaded">
+      <div [formGroup]="electionForm">
+        <mat-form-field>
+          <mat-select placeholder="School Year" [(value)]="electionForm.value.sy" formControlName="sy">
+            <mat-option *ngFor="let schoolYear of schoolYears" [value]="schoolYear.id">
+              {{ schoolYear.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <br>
+        <br>
+        <mat-form-field>
+          <input type="text" formControlName="description" matInput placeholder="Description">
+        </mat-form-field>
+        <br>
+        <br>
+      </div>
 
-    <span>Select Audience</span>
-    <br>
-    <br>
+
+      <span>Select Audience</span>
+      <br>
+      <br>
 
 
-    <div fxLayout="row" fxLayoutAlign="start" fxLayoutGap="25px">
-      <mat-checkbox value="0" #allBtn (change)="selectAll($event)">All</mat-checkbox>
-      <mat-checkbox #checkInput (change)="onSelectDepartment(allBtn,$event)" *ngFor="let department of departments" [value]="department">
-        {{department.name}}
-      </mat-checkbox>
+      <div fxLayout="row" fxLayoutAlign="start" fxLayoutGap="25px">
+        <mat-checkbox value="0" #allBtn (change)="selectAll($event)">All</mat-checkbox>
+        <mat-checkbox #checkInput (change)="onSelectDepartment(allBtn,$event)" *ngFor="let department of departments" [value]="department">
+          {{department.name}}
+        </mat-checkbox>
+      </div>
+      <br>
+      <br>
+      <mat-checkbox #includeColRep *ngIf="isCollegeSelected"> Generate College Representatives </mat-checkbox>
+      <br>
+      <br>
+      <mat-checkbox #includeIndiRef> Allow partylist and generate independent party </mat-checkbox>
     </div>
-    <br>
-    <br>
-    <mat-checkbox #includeColRep *ngIf="isCollegeSelected"> Generate College Representatives </mat-checkbox>
-    <br>
-    <br>
-    <mat-checkbox #includeIndiRef> Allow partylist and generate independent party </mat-checkbox>
   </div>
-
 
 
 
 </mat-dialog-content>
 
-<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="15px">
+<mat-dialog-actions fxLayout="row" *ngIf="!isRegistering" fxLayoutAlign="end center" fxLayoutGap="15px">
 
   <button mat-raised-button color="primary" (click)="addElection()">Complete Setup</button>
   <button mat-button mat-dialog-close>Cancel</button>
