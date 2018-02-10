@@ -52,17 +52,10 @@ export class AuthComponent implements OnInit {
   }
 
   redirectIfAuthenticated() {
-    this.route.queryParams
-      .filter(params => params.lastVisit)
-      .subscribe(
-      (params) => {
-        this.redirectTo = params.lastVisit;
-      }
-      );
 
     const token = this.authService.checkToken();
-    if (token != null) {
-      this.router.navigate([this.redirectTo]);
+    if (token != false) {
+      this.router.navigate(['']);
     }
   }
 
