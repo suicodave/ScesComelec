@@ -12,11 +12,12 @@ export class PositionService {
 
   constructor(private authService: AuthService, private http: HttpClient) { }
 
-  registerPosition(electionId, name, numberOfWinners, positionId = null) {
+  registerPosition(electionId, name, numberOfWinners, posRank, positionId = null) {
 
     const body = {
       'name': name,
-      'number_of_winners': numberOfWinners
+      'number_of_winners': numberOfWinners,
+      'rank': posRank
     };
 
     if (positionId) {

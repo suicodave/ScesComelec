@@ -26,14 +26,16 @@ export class AddPositionComponent implements OnInit {
 
     this.positionForm = this.fb.group({
       posName: ['', [Validators.required]],
-      winNum: ['', [Validators.required]]
+      winNum: ['', [Validators.required]],
+      posRank: ['', [Validators.required]]
     });
 
     if (this.isToUpdate) {
       this.position = this.data.position;
       this.positionForm.patchValue({
         posName: this.position.name,
-        winNum: this.position.number_of_winners
+        winNum: this.position.number_of_winners,
+        posRank: this.position.rank
       });
     }
   }
@@ -48,7 +50,7 @@ export class AddPositionComponent implements OnInit {
     }
     this.isProcessing = true;
     // tslint:disable-next-line:max-line-length
-    this.positionService.registerPosition(this.data.election.id, this.positionForm.value.posName, this.positionForm.value.winNum, (this.isToUpdate) ? this.position.id : undefined).subscribe(
+    this.positionService.registerPosition(this.data.election.id, this.positionForm.value.posName, this.positionForm.value.winNum, this.positionForm.value.posRank, (this.isToUpdate) ? this.position.id : undefined).subscribe(
       (res: any) => {
         this.positionService.behaviorSource.next(1);
         this.snackbar.open(res.externalMessage, 'Okay', {
