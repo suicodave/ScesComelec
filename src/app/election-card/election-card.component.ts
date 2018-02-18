@@ -9,6 +9,8 @@ import { PartylistService } from '../services/partylist.service';
 import { ElectionService } from '../services/election.service';
 import { DeleteComponent } from '../modals/delete/delete.component';
 import { ShowCandidateComponent } from '../modals/show-candidate/show-candidate.component';
+import * as FileSaver from 'file-saver';
+import { UpdateElectionComponent } from '../modals/update-election/update-election.component';
 @Component({
   selector: 'app-election-card',
   templateUrl: './election-card.component.html',
@@ -17,22 +19,30 @@ import { ShowCandidateComponent } from '../modals/show-candidate/show-candidate.
 export class ElectionCardComponent implements OnInit, OnChanges {
   @Input('election') election;
   @Output() onDelete = new EventEmitter();
+  @Output() onUpdate = new EventEmitter();
   audience;
   schoolYear;
   numberOfStudents;
   accumulatedVotes;
+  remainingVotes;
   candidates;
   positions;
   partylists;
   isCandidateLoading = false;
   isPartylistLoading = false;
   isPositionLoading = false;
+  isRankingLoaded = false;
   serviceClasses = [
     this.candidateService,
     this.positionService,
     this.partylistService,
     this.electionService
   ];
+  rankings;
+  isDeletable;
+  isDownloadingStudent = false;
+  isDownloadingRanking = false;
+  isUpdatingElection = false;
   // tslint:disable-next-line:max-line-length
   constructor(private snackbar: MatSnackBar, private dialog: MatDialog, private candidateService: CandidateService, private positionService: PositionService, private partylistService: PartylistService, private electionService: ElectionService) { }
 
@@ -41,7 +51,6 @@ export class ElectionCardComponent implements OnInit, OnChanges {
   }
   ngOnChanges() {
     this.loadContents();
-
     this.positionService.behaviorState.subscribe(
       (res) => {
         this.getPositions(this.election.id);
@@ -57,13 +66,18 @@ export class ElectionCardComponent implements OnInit, OnChanges {
         this.getCandidates(this.election.id);
       }
     );
+    this.getRankings(this.election.id);
   }
 
   loadContents() {
+    console.log(this.election);
+
+    this.isDeletable = (!this.election.is_active && !this.election.is_published);
     this.audience = this.election.departments.map(dep => dep.name).join(', ');
     this.schoolYear = this.election.school_year;
     this.numberOfStudents = this.election.number_of_students;
     this.accumulatedVotes = this.election.accumulated_votes;
+    this.remainingVotes = this.election.remaining_votes;
   }
 
   addCandidate() {
@@ -133,7 +147,74 @@ export class ElectionCardComponent implements OnInit, OnChanges {
       );
   }
 
+  getRankings(electionId) {
+    this.isRankingLoaded = false;
+    this.electionService.candidateStanding(this.election.id).subscribe((res: any) => {
+      this.rankings = res.data;
+      this.isRankingLoaded = true;
+    });
+  }
 
+  generateStudentStatusCSV() {
+
+    this.isDownloadingStudent = true;
+    this.electionService.voterStatus(this.election.id).subscribe((res: any) => {
+      const election = res.election;
+      const students = res.data;
+
+      const meta = [
+        `Election ID, ${election.id}`,
+        `Description, ${election.description}`,
+        `School Year, ${election.school_year.name}`,
+        '',
+        'Fullname, Vote Entries'
+      ];
+      const transformStudent = students.map((student) => {
+        return `"${student.name}",${student.vote}`;
+      });
+
+      meta.push(transformStudent.join('\n').toString());
+      const output = meta.join('\n').toString();
+
+
+
+      const blob = new Blob([output], { type: 'text/csv;charset=utf-8' });
+
+      const fileSaver = FileSaver;
+      fileSaver.saveAs(blob, `Election-${election.id}-${election.school_year.name}.csv`);
+      this.isDownloadingStudent = false;
+    });
+  }
+
+  generateRankingCSV() {
+    const election = this.election;
+    this.isDownloadingRanking = true;
+    const electionMeta = [
+      `Election ID, ${election.id}`,
+      `Description, ${election.description}`,
+      `School Year, ${election.school_year.name}`,
+      '',
+    ];
+    const transformRanking = this.rankings.map((rank) => {
+      const data = [
+        `Position, ${rank.name}`,
+        'Fullname,Votes Gathered'
+      ];
+      const transformCandidiate = rank.candidates.map((candidate) => {
+        return `${candidate.full_name},${candidate.votes}`;
+      });
+      data.push(transformCandidiate.join('\n').toString());
+      return data.join('\n').toString();
+    });
+
+    electionMeta.push(transformRanking.join('\n\n').toString());
+
+    const output = electionMeta.join('\n').toString();
+    const blob = new Blob([output], { type: 'text/csv;charset=utf-8' });
+    const fileSaver = FileSaver;
+    fileSaver.saveAs(blob, `Election-${this.election.id}-${this.election.school_year.name}.csv`);
+    this.isDownloadingRanking = false;
+  }
 
   candidateInfo(candidate) {
 
@@ -164,6 +245,23 @@ export class ElectionCardComponent implements OnInit, OnChanges {
       this.onDelete.emit();
     });
 
+  }
+
+  updateElection(method, value) {
+    this.isUpdatingElection = true;
+    const ref = this.dialog.open(UpdateElectionComponent, {
+      width: '450px',
+      data: {
+        method: method,
+        value: value,
+        election: this.election
+      }
+    });
+
+    ref.afterClosed().subscribe(() => {
+      this.isUpdatingElection = false;
+      this.onUpdate.emit();
+    });
   }
 
 }
