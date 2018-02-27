@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { AddCandidateComponent } from '../modals/add-candidate/add-candidate.component';
 import { AddPositionComponent } from '../modals/add-position/add-position.component';
@@ -11,6 +11,7 @@ import { DeleteComponent } from '../modals/delete/delete.component';
 import { ShowCandidateComponent } from '../modals/show-candidate/show-candidate.component';
 import * as FileSaver from 'file-saver';
 import { UpdateElectionComponent } from '../modals/update-election/update-election.component';
+declare var Pusher: any;
 @Component({
   selector: 'app-election-card',
   templateUrl: './election-card.component.html',
@@ -20,6 +21,7 @@ export class ElectionCardComponent implements OnInit, OnChanges {
   @Input('election') election;
   @Output() onDelete = new EventEmitter();
   @Output() onUpdate = new EventEmitter();
+  pusher;
   audience;
   schoolYear;
   numberOfStudents;
@@ -44,13 +46,14 @@ export class ElectionCardComponent implements OnInit, OnChanges {
   isDownloadingRanking = false;
   isUpdatingElection = false;
   // tslint:disable-next-line:max-line-length
-  constructor(private snackbar: MatSnackBar, private dialog: MatDialog, private candidateService: CandidateService, private positionService: PositionService, private partylistService: PartylistService, private electionService: ElectionService) { }
+  constructor(private snackbar: MatSnackBar, private dialog: MatDialog, private candidateService: CandidateService, private positionService: PositionService, private partylistService: PartylistService, private electionService: ElectionService, private cd: ChangeDetectorRef) { }
 
   ngOnInit() {
 
   }
   ngOnChanges() {
     this.loadContents();
+    this.initPusher();
     this.positionService.behaviorState.subscribe(
       (res) => {
         this.getPositions(this.election.id);
@@ -219,7 +222,7 @@ export class ElectionCardComponent implements OnInit, OnChanges {
   candidateInfo(candidate) {
 
     this.dialog.open(ShowCandidateComponent, {
-      width: '70%',
+      width: '450px',
       data: {
         election: this.election,
         candidate: candidate,
@@ -261,6 +264,36 @@ export class ElectionCardComponent implements OnInit, OnChanges {
     ref.afterClosed().subscribe(() => {
       this.isUpdatingElection = false;
       this.onUpdate.emit();
+    });
+  }
+
+  initPusher() {
+    Pusher.logToConsole = true;
+
+
+    this.pusher = new Pusher('4051662bb310056f8c60', {
+      cluster: 'eu',
+      encrypted: true
+    });
+
+    const depIds = this.election.departments.map((item) => {
+      return item.id;
+    });
+
+
+    for (const id of depIds) {
+
+      this.pusher.subscribe(`vote${id}sy${this.election.school_year.id}`);
+    }
+
+
+    this.pusher.bind(`vote${this.election.id}`, (data) => {
+      console.log(data);
+
+      this.rankings = data.meta.standing;
+      this.accumulatedVotes = data.meta.election.accumulated_votes;
+      this.remainingVotes = data.meta.election.remaining_votes;
+      this.cd.detectChanges();
     });
   }
 
