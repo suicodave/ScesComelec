@@ -4,52 +4,71 @@
   <div fxLayout="row" fxFlex="50" fxLayoutAlign="start" fxLayoutGap="25px">
     <!-- Prepared Elections -->
     <mat-card fxFlex="50%">
-      <div fxLayout="row" fxLayoutAlign="center start">
-        <span>Prepared Elections</span>
-      </div>
-      <mat-card-content>
-        <mat-list>
-          <mat-list-item *ngFor="let election of myPreparedElections" (click)="onSelectElection(election)">
-            {{election.description}}
-          </mat-list-item>
 
-        </mat-list>
-      </mat-card-content>
+      <div class="show-when-loading" *ngIf="!isPreparedElectionLoaded">
+        Loading...
+      </div>
+      <div class="show-when-loaded" *ngIf="isPreparedElectionLoaded">
+        <div fxLayout="row" fxLayoutAlign="center start">
+          <span>Prepared Elections</span>
+        </div>
+        <mat-card-content>
+          <mat-list>
+            <mat-list-item *ngFor="let election of myPreparedElections" (click)="onSelectElection(election)">
+              {{election.description}}
+            </mat-list-item>
+
+          </mat-list>
+        </mat-card-content>
+      </div>
+
     </mat-card>
 
     <!-- Opened Elections -->
     <mat-card fxFlex="50%">
-      <div fxLayout="row" fxLayoutAlign="center start">
-        <span>Opened Elections</span>
+
+      <div class="show-when-loading" *ngIf="!isActiveElectionLoaded">
+        Loading...
       </div>
-      <mat-card-content>
-        <mat-list>
+      <div class="show-when-loaded" *ngIf="isActiveElectionLoaded">
+        <div fxLayout="row" fxLayoutAlign="center start">
+          <span>Opened Elections</span>
+        </div>
+        <mat-card-content>
+          <mat-list>
 
-          <mat-list-item *ngFor="let election of myActiveElections" (click)="onSelectElection(election)">
-            {{election.description}}
-          </mat-list-item>
+            <mat-list-item *ngFor="let election of myActiveElections" (click)="onSelectElection(election)">
+              {{election.description}}
+            </mat-list-item>
 
-        </mat-list>
-      </mat-card-content>
+          </mat-list>
+        </mat-card-content>
+      </div>
+
     </mat-card>
 
     <!-- Completed Elections -->
     <mat-card fxFlex="50%">
-      <div fxLayout="row" fxLayoutAlign="center start">
-        <span>My Elections</span>
-      </div>
 
-      <mat-card-content fxLayout="column" fxLayoutAlign="start" fxLayoutGap="15px">
-        <div *ngFor="let election of elections">
-          <div fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap="15px">
-            <span> {{election.sy}} </span>
-            <span>{{election.department}} </span>
-            <span>{{election.description}} </span>
-          </div>
-          <mat-divider></mat-divider>
+        <div class="show-when-loading" *ngIf="!isPublishedElectionLoaded">
+          Loading...
         </div>
-      </mat-card-content>
-    </mat-card>
+        <div class="show-when-loaded" *ngIf="isPublishedElectionLoaded">
+          <div fxLayout="row" fxLayoutAlign="center start">
+            <span>Published Elections</span>
+          </div>
+          <mat-card-content>
+            <mat-list>
+  
+              <mat-list-item *ngFor="let election of myPublishedElections" (click)="onSelectElection(election)">
+                {{election.description}}
+              </mat-list-item>
+  
+            </mat-list>
+          </mat-card-content>
+        </div>
+  
+      </mat-card>
 
   </div>
 
@@ -57,7 +76,7 @@
   <!-- row2 -->
   <div fxLayout="row" fxFlex="50" fxLayoutAlign="start" fxLayoutGap="25px">
 
-    <app-election-card #electionCard (onDelete)="deleteElection()" [election]="selectedElection" *ngIf="selectedElection" fxFlex></app-election-card>
+    <app-election-card #electionCard (onUpdate)="updateElection()" (onDelete)="deleteElection()" [election]="selectedElection" *ngIf="selectedElection" fxFlex></app-election-card>
   </div>
 
 </div>

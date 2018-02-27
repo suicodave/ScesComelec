@@ -27,7 +27,13 @@ export class ElectionService {
   }
 
 
-
+  candidateStanding(electionId, isMasked = 0) {
+    const params = new HttpParams()
+      .set('is_masked', isMasked.toString());
+    return this.http.get(apiUrl + `elections/${electionId}/standings`, {
+      headers: apiHeaders.append('Authorization', `Bearer ${this.authService.checkToken()}`)
+    });
+  }
 
   // tslint:disable-next-line:max-line-length
   registerElection(syId, description, depIds, enableParty = false, enableColRep = false) {
@@ -46,6 +52,28 @@ export class ElectionService {
   delete(id, electionId) {
     return this.http.delete(apiUrl + `elections/${electionId}`, {
       headers: apiHeaders.append('Authorization', `Bearer ${this.authService.checkToken()}`)
+    });
+  }
+
+  voterStatus(electionId) {
+    return this.http.get(apiUrl + `elections/${electionId}/voter-status`, {
+      headers: apiHeaders.append('Authorization', `Bearer ${this.authService.checkToken()}`)
+    });
+  }
+
+  updateElection(electionId, method, value) {
+    let body = {};
+    if (method == 'start' || method == 'end') {
+      body = {
+        is_active: value
+      };
+    } else if (method == 'publish') {
+      body = {
+        is_published: value
+      };
+    }
+    return this.http.put(apiUrl + `elections/${electionId}`, body, {
+      headers: apiHeaders.append('Authorization', `Bearer ${this.authService.checkToken()}`),
     });
   }
 

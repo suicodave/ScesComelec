@@ -1,0 +1,18 @@
+<mat-dialog-content>
+  <div fxLayout="column" *ngIf="isUpdating" fxLayoutAlign="center center" fxLayoutGap="15px">
+    <mat-spinner diameter="55" strokeWidth="4"></mat-spinner>
+    <span>Updating...</span>
+  </div>
+  <p *ngIf="!isUpdating">
+    Are you sure you want to {{method}} this election?
+  </p>
+</mat-dialog-content>
+
+<mat-dialog-actions *ngIf="!isUpdating" fxLayout="row" fxLayoutAlign="end" fxLayoutGap="15px">
+  <button mat-raised-button color="primary" (click)="confirmUpdate()">
+    Yes
+  </button>
+  <button mat-button mat-dialog-close>
+    No
+  </button>
+</mat-dialog-actions>

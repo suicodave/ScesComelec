@@ -13,22 +13,28 @@
     <div class="hide-when-deleting">
       <p>
         Election Id : {{election.id}}
-        <button mat-icon-button color="warn" (click)="delete(electionService,election.id,'election')">
+        <button mat-icon-button color="warn" *ngIf="!election.is_active && !election.is_published " (click)="delete(electionService,election.id,'election')">
           <mat-icon>delete</mat-icon>
         </button>
       </p>
 
       <p>Audience : {{audience}}</p>
       <p>Number of Voters : {{numberOfStudents}}</p>
+      <p>Accumulated Votes : {{accumulatedVotes}} </p>
+      <p>Remaining Votes : {{remainingVotes}} </p>
       <p>School Year : {{schoolYear.name}}</p>
       <p>Created At : {{election.created_at.date | date:'mediumDate' }}</p>
       <p>Partylists Allowed: {{election.is_party_enabled ? 'Yes' : 'No' }} </p>
       <p>College Representatives Allowed: {{election.is_colrep_enabled ? 'Yes' : 'No'}} </p>
 
 
-      <p>
-        <button mat-raised-button color="primary" *ngIf="!election.is_active">Start Election</button>
-        <button mat-raised-button color="warn" *ngIf="election.is_active">End Election</button>
+      <p *ngIf="!isUpdatingElection">
+        <button mat-raised-button (click)="updateElection('start',1)" color="primary" *ngIf="!election.is_active && !election.is_published">Start Election</button>
+        <button mat-raised-button (click)="updateElection('publish',1)" color="primary" *ngIf="election.is_started && !election.is_published && !election.is_active ">Publish Election</button>
+        <button mat-raised-button (click)="updateElection('end',0)" color="warn" *ngIf="election.is_active">End Election</button>
+      </p>
+      <p *ngIf="isUpdatingElection">
+        Updating Election...
       </p>
 
 
@@ -56,7 +62,7 @@
                 <mat-card *ngFor="let candidate of candidates" fxFlex="31">
                   <p>
                     Candidate ID: {{candidate.id}}
-                    <button mat-icon-button color="warn" (click)="delete(candidateService,candidate.id,'candidate')">
+                    <button mat-icon-button color="warn" *ngIf="isDeletable" (click)="delete(candidateService,candidate.id,'candidate')">
                       <mat-icon>delete</mat-icon>
                     </button>
                   </p>
@@ -109,13 +115,16 @@
                 <mat-card *ngFor="let position of positions" fxFlex="30">
                   <p>
                     ID : {{position.id}}
-                    <button mat-icon-button color="warn" (click)="delete(positionService,position.id,'position')">
+                    <button mat-icon-button color="warn" *ngIf="isDeletable" (click)="delete(positionService,position.id,'position')">
                       <mat-icon>delete</mat-icon>
                     </button>
                   </p>
                   <div (click)="addPosition(true,position)">
                     <p>
                       Name: {{position.name}}
+                    </p>
+                    <p>
+                      Rank : {{position.rank}}
                     </p>
                     <p>
                       Number of Winners: {{position.number_of_winners}}
@@ -152,7 +161,7 @@
                 <mat-card *ngFor="let partylist of partylists" fxFlex="30">
                   <p>
                     ID : {{partylist.id}}
-                    <button mat-icon-button color="warn" (click)="delete(partylistService,partylist.id,'partylist')">
+                    <button mat-icon-button color="warn" *ngIf="isDeletable" (click)="delete(partylistService,partylist.id,'partylist')">
                       <mat-icon>delete</mat-icon>
                     </button>
                   </p>
@@ -174,15 +183,37 @@
           </div>
         </mat-tab>
 
+        <!-- ResultsSection -->
         <mat-tab label="Results">
           <div class="tab-container">
+            <div fxLayout="column" *ngIf="!isRankingLoaded" fxLayoutAlign="center center" fxLayoutGap="15px">
+              <mat-spinner diameter="55" strokeWidth="4"></mat-spinner>
+              <span>Loading Data...</span>
+            </div>
+
+            <div class="show-when-loaded" *ngIf="isRankingLoaded">
+
+              <button mat-raised-button color="primary" *ngIf="election.is_published" (click)="generateRankingCSV()">Download Data</button>
+              <div *ngFor="let rank of rankings; last as isLast">
+                <p>{{rank.name}} </p>
+
+                <div fxLayout="row wrap" class="listing" fxLayoutAlign="start" fxLayoutGap="15px">
+                  <mat-card fxFlex="30" *ngFor="let candidate of rank.candidates">
+                    <p>{{candidate.full_name}}</p>
+                    <p>{{candidate.votes}} Vote(s) </p>
+                  </mat-card>
+                </div>
+                <mat-divider *ngIf="!isLast"></mat-divider>
+              </div>
+            </div>
+
 
           </div>
         </mat-tab>
 
-        <mat-tab label="Voters">
+        <mat-tab label="Voters" *ngIf="election.is_published">
           <div class="tab-container">
-
+            <button mat-raised-button color="primary" [disabled]="isDownloadingStudent" (click)="generateStudentStatusCSV()">Download Data</button>
           </div>
         </mat-tab>
 

@@ -33,6 +33,7 @@ import { SchoolSettingsService } from './services/school-settings.service';
 import { DeleteComponent } from './modals/delete/delete.component';
 import { CapitalizePipe } from './pipes/capitalize.pipe';
 import { ShowCandidateComponent } from './modals/show-candidate/show-candidate.component';
+import { UpdateElectionComponent } from './modals/update-election/update-election.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { ShowCandidateComponent } from './modals/show-candidate/show-candidate.c
     AddPartyComponent,
     DeleteComponent,
     CapitalizePipe,
-    ShowCandidateComponent
+    ShowCandidateComponent,
+    UpdateElectionComponent
   ],
   imports: [
     BrowserModule,
@@ -78,7 +80,8 @@ import { ShowCandidateComponent } from './modals/show-candidate/show-candidate.c
     AddCandidateComponent,
     AddPartyComponent,
     DeleteComponent,
-    ShowCandidateComponent
+    ShowCandidateComponent,
+    UpdateElectionComponent
   ],
   bootstrap: [AppComponent]
 })
