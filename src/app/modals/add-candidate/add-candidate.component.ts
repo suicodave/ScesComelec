@@ -27,7 +27,6 @@ export class AddCandidateComponent implements OnInit {
 
   ngOnInit() {
     this.initForm();
-    console.log(this.data);
 
   }
 
@@ -85,7 +84,6 @@ export class AddCandidateComponent implements OnInit {
 
   findStudent(query) {
     this.isSearching = true;
-    console.log(query);
     this.candidateService.findStudents(query).subscribe(
       (res: any) => {
         this.isSearching = false;
@@ -120,7 +118,6 @@ export class AddCandidateComponent implements OnInit {
     // tslint:disable-next-line:max-line-length
     this.candidateService.registerCandidate(this.data.election.id, this.file, this.selectedStudent.id, this.candidateForm.value.position.id, this.candidateForm.value.aboutMe, (this.candidateForm.get('partylist') != null) ? this.candidateForm.value.partylist.id : 0).subscribe(
       (res: any) => {
-        console.log(res.data);
         this.candidateService.behaviorSource.next(1);
         this.snackbar.open(res.externalMessage, 'Okay', {
           duration: 5000

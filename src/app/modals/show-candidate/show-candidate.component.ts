@@ -14,7 +14,6 @@ export class ShowCandidateComponent implements OnInit {
   ngOnInit() {
     this.election = this.data.election;
     this.candidate = this.data.candidate;
-    console.log(this.candidate);
   }
 
 }

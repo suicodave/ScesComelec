@@ -55,7 +55,6 @@ export class AddPartyComponent implements OnInit {
 
       },
       (err) => {
-        console.log(err);
 
         this.isProcessing = false;
         this.dialogRef.close();

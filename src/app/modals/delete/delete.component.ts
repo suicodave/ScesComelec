@@ -22,7 +22,6 @@ export class DeleteComponent implements OnInit {
     this.id = this.data.id;
     this.election = this.data.election;
     this.deleteSubject = this.data.deleteSubject;
-    console.log(this.deleteSubject);
 
 
   }
@@ -38,7 +37,6 @@ export class DeleteComponent implements OnInit {
 
       },
       (err) => {
-        console.log(err);
 
       },
       () => {
