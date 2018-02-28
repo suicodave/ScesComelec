@@ -139,7 +139,6 @@ export class AddElectionComponent implements OnInit {
 
       },
       (err) => {
-        console.log(err);
         this.isRegistering = false;
       },
       () => {

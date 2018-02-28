@@ -74,7 +74,6 @@ export class ElectionCardComponent implements OnInit, OnChanges {
   }
 
   loadContents() {
-    console.log(this.election);
 
     this.isDeletable = (!this.election.is_active && !this.election.is_published);
     this.audience = this.election.departments.map(dep => dep.name).join(', ');
@@ -289,7 +288,6 @@ export class ElectionCardComponent implements OnInit, OnChanges {
 
 
     this.pusher.bind(`vote${this.election.id}`, (data) => {
-      console.log(data);
 
       this.rankings = data.meta.standing;
       this.accumulatedVotes = data.meta.election.accumulated_votes;
