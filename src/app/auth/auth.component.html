@@ -1,19 +1,23 @@
 <mat-sidenav-container>
 
-  <mat-sidenav-content fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="15px"> 
+  <mat-sidenav-content fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="15px">
+    <p>
+      SCES Registrar
+    </p>
+    <form *ngIf="!isLogging" (ngSubmit)="signIn()" [formGroup]="authForm" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="15px">
 
-    <form (ngSubmit)="signIn()" [formGroup]="authForm" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="15px">
-      <p>
-        SCES Registrar
-      </p>
       <mat-form-field>
         <input type="email" formControlName="email" matInput placeholder="Email">
       </mat-form-field>
       <mat-form-field>
         <input type="password" formControlName="password" matInput placeholder="Password">
       </mat-form-field>
-      <button  mat-raised-button color="primary" type="submit">Sign In</button>
+      <button mat-raised-button color="primary" type="submit">Sign In</button>
     </form>
+    <div fxLayout="column" *ngIf="isLogging" fxLayoutAlign="center center" fxLayoutGap="15px">
+      <mat-spinner diameter="35" strokeWidth="4"></mat-spinner>
+      <p>Signing In...</p>
+    </div>
   </mat-sidenav-content>
 
 

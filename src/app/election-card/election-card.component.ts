@@ -11,6 +11,7 @@ import { DeleteComponent } from '../modals/delete/delete.component';
 import { ShowCandidateComponent } from '../modals/show-candidate/show-candidate.component';
 import * as FileSaver from 'file-saver';
 import { UpdateElectionComponent } from '../modals/update-election/update-election.component';
+import { pusherKey } from '../interfaces/global';
 declare var Pusher: any;
 @Component({
   selector: 'app-election-card',
@@ -271,7 +272,11 @@ export class ElectionCardComponent implements OnInit, OnChanges {
     Pusher.logToConsole = true;
 
 
+<<<<<<< HEAD
     this.pusher = new Pusher('068cb0ad7d41b29d066e', {
+=======
+    this.pusher = new Pusher(pusherKey, {
+>>>>>>> master
       cluster: 'eu',
       encrypted: true
     });
