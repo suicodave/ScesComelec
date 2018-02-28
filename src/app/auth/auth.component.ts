@@ -14,6 +14,7 @@ import 'rxjs/add/operator/filter';
 export class AuthComponent implements OnInit {
   authForm: FormGroup;
   redirectTo = '';
+  isLogging = false;
   // tslint:disable-next-line:max-line-length
   constructor(private snackbar: MatSnackBar, private fb: FormBuilder, private authService: AuthService, private router: Router, private route: ActivatedRoute) { }
 
@@ -33,6 +34,7 @@ export class AuthComponent implements OnInit {
     if (this.authForm.invalid) {
       return;
     }
+    this.isLogging = true;
     const email = this.authForm.value.email;
     const pass = this.authForm.value.password;
 
@@ -45,6 +47,7 @@ export class AuthComponent implements OnInit {
         this.snackbar.open(err.error.message, 'Okay', {
           duration: 5000
         });
+        this.isLogging = false;
 
       }
     );
