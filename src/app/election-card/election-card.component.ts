@@ -272,11 +272,7 @@ export class ElectionCardComponent implements OnInit, OnChanges {
     Pusher.logToConsole = true;
 
 
-<<<<<<< HEAD
-    this.pusher = new Pusher('068cb0ad7d41b29d066e', {
-=======
     this.pusher = new Pusher(pusherKey, {
->>>>>>> master
       cluster: 'eu',
       encrypted: true
     });
