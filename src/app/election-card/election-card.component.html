@@ -51,7 +51,7 @@
             </div>
 
             <div class="show-when-loaded" *ngIf="!isCandidateLoading">
-              <button (click)="addCandidate()" matTooltip="Register Candidate" matTooltipClass="tooltipStyle" matTooltipPosition="after"
+              <button (click)="addCandidate()" matTooltip="Register Candidate" matTooltipClass="tooltipStyle" matTooltipPosition="after" *ngIf="isDeletable"
                 mat-icon-button>
                 <mat-icon>add</mat-icon>
               </button>
@@ -107,7 +107,7 @@
               <span>Loading Data...</span>
             </div>
             <div class="show-when-loaded" *ngIf="!isPositionLoading">
-              <button (click)="addPosition()" matTooltip="Add Positions" matTooltipClass="tooltipStyle" matTooltipPosition="after" mat-icon-button>
+              <button (click)="addPosition()" matTooltip="Add Positions" matTooltipClass="tooltipStyle" *ngIf="isDeletable" matTooltipPosition="after" mat-icon-button>
                 <mat-icon>add</mat-icon>
               </button>
 
@@ -153,7 +153,7 @@
             </div>
 
             <div class="show-when-loaded" *ngIf="!isPartylistLoading">
-              <button (click)="addParty()" matTooltip="Add Party" matTooltipClass="tooltipStyle" matTooltipPosition="after" mat-icon-button>
+              <button (click)="addParty()" matTooltip="Add Party" matTooltipClass="tooltipStyle" *ngIf="isDeletable" matTooltipPosition="after" mat-icon-button>
                 <mat-icon>add</mat-icon>
               </button>
 
