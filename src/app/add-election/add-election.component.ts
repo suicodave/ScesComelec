@@ -17,7 +17,7 @@ export class AddElectionComponent implements OnInit {
   @ViewChild('includeColRep') includeColRep: MatCheckbox;
   departments;
   schoolYears;
-
+  activeSchoolYear;
   selectedDepartments = [];
   isCollegeSelected = false;
   electionForm: FormGroup;
@@ -44,8 +44,8 @@ export class AddElectionComponent implements OnInit {
 
         this.schoolYears = res[0];
         this.departments = res[2];
+        this.activeSchoolYear = res[1];
         this.electionForm = this.fb.group({
-          sy: [res[1].id, [Validators.required]],
           description: ['', [Validators.required]]
         });
 
@@ -116,7 +116,7 @@ export class AddElectionComponent implements OnInit {
     let includeParty = false;
     let includeColRep = false;
     const ids = this.selectedDepartments.map((dep) => dep.id);
-    const syId = this.electionForm.value.sy;
+    const syId = this.activeSchoolYear.id;
     const desc = this.electionForm.value.description;
 
 
