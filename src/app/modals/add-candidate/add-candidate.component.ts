@@ -131,7 +131,7 @@ export class AddCandidateComponent implements OnInit {
             duration: 5000
           });
         } else {
-          this.snackbar.open('Operation failed. Please try again.', 'Okay', {
+          this.snackbar.open('Operation failed. The student may have been a candidate already. Please try again.', 'Okay', {
             duration: 5000
           });
         }
