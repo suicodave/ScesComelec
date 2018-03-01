@@ -21,13 +21,9 @@
 
     <div class="hasloaded" *ngIf="isSettingsLoaded">
       <div [formGroup]="electionForm">
-        <mat-form-field>
-          <mat-select placeholder="School Year" [(value)]="electionForm.value.sy" formControlName="sy">
-            <mat-option *ngFor="let schoolYear of schoolYears" [value]="schoolYear.id">
-              {{ schoolYear.name }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+        <p>
+          School Year : {{activeSchoolYear.name}}
+        </p>
         <br>
         <br>
         <mat-form-field>
